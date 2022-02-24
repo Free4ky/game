@@ -1,5 +1,7 @@
 package GameState;
 
+import Main.Game;
+import Main.GamePanel;
 import TileMap.Background;
 
 import java.awt.*;
@@ -11,7 +13,7 @@ public class MenuState extends GameState {
 	
 	private int currentChoice = 0;
 	private String[] options = {
-		"Start",
+		"Levels",
 		"Help",
 		"Quit"
 	};
@@ -26,8 +28,7 @@ public class MenuState extends GameState {
 		this.gsm = gsm;
 		
 		try {
-			
-			bg = new Background("/Backgrounds/menubg.gif", 1);
+			bg = new Background("/Backgrounds/7Ik1.gif", 1);
 			bg.setVector(-0.1, 0);
 			
 			titleColor = new Color(128, 0, 0);
@@ -59,25 +60,27 @@ public class MenuState extends GameState {
 		// draw title
 		g.setColor(titleColor);
 		g.setFont(titleFont);
-		g.drawString("Dragon Tale", 80, 70);
+		int length = stringLength("GAME",g);
+		g.drawString("GAME", GamePanel.WIDTH/2 - length/2, 70);
 		
 		// draw menu options
 		g.setFont(font);
 		for(int i = 0; i < options.length; i++) {
 			if(i == currentChoice) {
-				g.setColor(Color.BLACK);
+				g.setColor(Color.white);
 			}
 			else {
 				g.setColor(Color.RED);
 			}
-			g.drawString(options[i], 145, 140 + i * 15);
+			length = stringLength(options[i],g);
+			g.drawString(options[i], GamePanel.WIDTH/2 - length/2, 140 + i * 15);
 		}
 		
 	}
 	
 	private void select() {
 		if(currentChoice == 0) {
-			// start
+			gsm.setState(GameStateManager.LEVEL_MENU);
 		}
 		if(currentChoice == 1) {
 			// help
@@ -105,7 +108,12 @@ public class MenuState extends GameState {
 		}
 	}
 	public void keyReleased(int k) {}
-	
+
+	// Функция возвращающая длину строки в пикселях
+	// Необходима для центровки текста
+	public static int stringLength(String s, Graphics2D g){
+		return (int) g.getFontMetrics().getStringBounds(s,g).getWidth();
+	}
 }
 
 

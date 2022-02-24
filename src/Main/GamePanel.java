@@ -1,3 +1,5 @@
+// Класс GamePanel является ключевым в проекте. В нем происходит главный цикл игры (game loop)
+// обновление, отрисовка всех элементов игры.
 package Main;
 
 import java.awt.*;
@@ -8,15 +10,16 @@ import javax.swing.JPanel;
 
 import GameState.GameStateManager;
 
-public class GamePanel extends JPanel 
-	implements Runnable, KeyListener{
+public class GamePanel extends JPanel implements Runnable, KeyListener{
 	
-	// dimensions
+	// Размерности
 	public static final int WIDTH = 320;
 	public static final int HEIGHT = 240;
 	public static final int SCALE = 2;
 	
-	// game thread
+	// Игровой поток (thread)
+	// нужен для регулировния скорости игры
+	// Скорость зависит от производительности компьютера, если её не регулировать, будет слишком быстро
 	private Thread thread;
 	private boolean running;
 	private int FPS = 60;
@@ -26,40 +29,39 @@ public class GamePanel extends JPanel
 	private BufferedImage image;
 	private Graphics2D g;
 	
-	// game state manager
+	// Класс управления состояниями игры
 	private GameStateManager gsm;
 	
 	public GamePanel() {
 		super();
-		setPreferredSize(
-			new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
-		setFocusable(true);
-		requestFocus();
+		setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
+		setFocusable(true); // позволяет фокусироваться на объекте GamePanel. Необходимо для обработки пользовательского ввода
+		requestFocus(); // получает фокус
 	}
-	
+
+	// addNotify - Делает этот компонент JPanel отображаемым, подключая его к собственному экранному ресурсу.
 	public void addNotify() {
 		super.addNotify();
 		if(thread == null) {
-			thread = new Thread(this);
-			addKeyListener(this);
-			thread.start();
+			thread = new Thread(this); // Создание потока с передачей в него экземпляра GamePanel
+			addKeyListener(this); // Добавляем ввод с клавиатуры
+			thread.start(); // Запуск потока с передачей в него экземпляра GamePanel
 		}
 	}
-	
+
+	// Метод инициализации
 	private void init() {
-		
-		image = new BufferedImage(
-					WIDTH, HEIGHT,
-					BufferedImage.TYPE_INT_RGB
-				);
+		// Создания холста
+		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+
+		//Создание пера для холста image
 		g = (Graphics2D) image.getGraphics();
-		
+
 		running = true;
-		
 		gsm = new GameStateManager();
-		
 	}
-	
+
+	// Запуск задачи потока
 	public void run() {
 		
 		init();
@@ -78,43 +80,54 @@ public class GamePanel extends JPanel
 			drawToScreen();
 			
 			elapsed = System.nanoTime() - start;
-			
+
+			// переменная wait отвечает за то время, которое нужно подождать потоку
+			// прежде чем запускать задачу потока снова
+			// Это позволяет регулировать скорость игры
 			wait = targetTime - elapsed / 1000000;
 			if(wait < 0) wait = 5;
-			
 			try {
 				Thread.sleep(wait);
 			}
 			catch(Exception e) {
-				e.printStackTrace();
+				e.printStackTrace(); // e.pritStackTrace() выводит стек ошибок. Удобно для отладки проекта
 			}
-			
 		}
 		
 	}
-	
+
+	// Метод обновления компонентов игры
 	private void update() {
+
 		gsm.update();
 	}
+
+	// Метод отрисовки компонентов игры.
+	// Компоненты игры сначала отрисовываются на холст image в методе draw
 	private void draw() {
+
 		gsm.draw(g);
 	}
+
+	// Этот метод отвечает уже за отрисовку холста на экран
+	// Такой подход называется double buffering (двойная буферизация)
+	// Это позволяет снизить блики, мерцания и нечеткости итоговой картинки
 	private void drawToScreen() {
 		Graphics g2 = getGraphics();
-		g2.drawImage(image, 0, 0,
-				WIDTH * SCALE, HEIGHT * SCALE,
-				null);
+		g2.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
 		g2.dispose();
 	}
-	
+
+	// Методы обработки пользовательского ввода с клавиатуры
 	public void keyTyped(KeyEvent key) {}
 	public void keyPressed(KeyEvent key) {
+
 		gsm.keyPressed(key.getKeyCode());
 	}
 	public void keyReleased(KeyEvent key) {
+
 		gsm.keyReleased(key.getKeyCode());
 	}
-
 }
 
 

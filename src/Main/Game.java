@@ -6,15 +6,12 @@ public class Game {
 	
 	public static void main(String[] args) {
 		
-		JFrame window = new JFrame("GAME");
-		window.setContentPane(new GamePanel());
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setResizable(false);
-		window.pack();
-		window.setVisible(true);
-		
+		JFrame window = new JFrame("GAME"); // устновка названия окна
+		window.setContentPane(new GamePanel()); // установка панели GamePanel в качестве содержимого окна window
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // установка операторо выхода
+		window.setResizable(false); // запрезаем пользователю изменять размер окна
+		window.pack(); // устанавливает минимальный необходимый размер окна для отображения компонентов
+		window.setVisible(true); // делаем окно видимым
 	}
-	
+
 }
-// Комментарии для проверки git
-// кщапвлыпдлавпджы
