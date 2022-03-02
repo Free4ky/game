@@ -7,6 +7,7 @@ import TileMap.Background;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 public class LevelMenuState extends GameState{
 
@@ -151,4 +152,8 @@ public class LevelMenuState extends GameState{
     public void keyReleased(int k) {
 
     }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {}
+
 }

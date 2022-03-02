@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 
 import GameState.GameStateManager;
 
-public class GamePanel extends JPanel implements Runnable, KeyListener{
+public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener{
 	
 	// Размерности
 	public static final int WIDTH = 320;
@@ -34,6 +34,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 	
 	public GamePanel() {
 		super();
+		addMouseListener(this);
 		setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
 		setFocusable(true); // позволяет фокусироваться на объекте GamePanel. Необходимо для обработки пользовательского ввода
 		requestFocus(); // получает фокус
@@ -53,12 +54,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 	private void init() {
 		// Создания холста
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-
 		//Создание пера для холста image
 		g = (Graphics2D) image.getGraphics();
-
-		running = true;
 		gsm = new GameStateManager();
+		running = true;
+
 	}
 
 	// Запуск задачи потока
@@ -128,6 +128,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 
 		gsm.keyReleased(key.getKeyCode());
 	}
+
+	public void mouseClicked(MouseEvent e){
+		gsm.mouseClicked(e);
+	}
+	public void mouseEntered(MouseEvent e){}
+	public void mouseExited(MouseEvent e){}
+	public void mousePressed(MouseEvent e){}
+	public void mouseReleased(MouseEvent e){}
 }
 
 

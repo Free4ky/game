@@ -1,6 +1,8 @@
 // Класс отвечающий за контроль и выбор состояний игры
 package GameState;
 
+import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class GameStateManager {
@@ -12,8 +14,10 @@ public class GameStateManager {
 	public static final int LEVEL_MENU = 1;
 	public static final int LEVEL1STATE = 2;
 
+
 	public GameStateManager() {
-		
+
+
 		gameStates = new ArrayList<GameState>();
 		
 		currentState = MENUSTATE;
@@ -50,7 +54,11 @@ public class GameStateManager {
 
 		gameStates.get(currentState).keyReleased(k);
 	}
-	
+
+	public void mouseClicked(MouseEvent e){
+		gameStates.get(currentState).mouseClicked(e);
+	}
+
 }
 
 
