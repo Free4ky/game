@@ -4,6 +4,7 @@ import Main.Game;
 import Main.GamePanel;
 import TileMap.Background;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
@@ -13,32 +14,38 @@ public class MenuState extends GameState {
 	
 	private int currentChoice = 0;
 	private String[] options = {
+		"Start",
 		"Levels",
 		"Help",
 		"Quit"
 	};
-	
+
+
+	private JButton jbt;
+
+
 	private Color titleColor;
 	private Font titleFont;
-	
+
 	private Font font;
+
 	
 	public MenuState(GameStateManager gsm) {
 		
 		this.gsm = gsm;
 		
 		try {
-			bg = new Background("/Backgrounds/7Ik1.gif", 1);
-			bg.setVector(-0.1, 0);
+			bg = new Background("/Backgrounds/11.gif", 1);
+			bg.setVector(0, 0);
 			
-			titleColor = new Color(128, 0, 0);
+			titleColor = new Color(0, 0, 0);
 			titleFont = new Font(
 					"Century Gothic",
-					Font.PLAIN,
-					28);
-			
+					Font.BOLD,
+					34);
+
 			font = new Font("Arial", Font.PLAIN, 12);
-			
+
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -60,20 +67,40 @@ public class MenuState extends GameState {
 		// draw title
 		g.setColor(titleColor);
 		g.setFont(titleFont);
-		int length = stringLength("GAME",g);
-		g.drawString("GAME", GamePanel.WIDTH/2 - length/2, 70);
-		
+
+		int length = stringLength("Dragon Survival",g);
+		g.drawString("Dragon Survival", GamePanel.WIDTH/2 - length/2, 50);
+
 		// draw menu options
 		g.setFont(font);
+
+
+		g.setColor(Color.yellow);
+
+		g.fillRect(130,125,60,18);
+		g.fillRect(130,145,60,18);
+		g.fillRect(130,165,60,18);
+		g.fillRect(130,185,60,18);
+
+		g.setColor(Color.black);
+		g.drawRect(130,125,60,18);
+		g.drawRect(130,145,60,18);
+		g.drawRect(130,165,60,18);
+		g.drawRect(130,185,60,18);
+
 		for(int i = 0; i < options.length; i++) {
+
+			//g.fillRect(130, 190, 80, 25);
+
+
 			if(i == currentChoice) {
-				g.setColor(Color.white);
+				g.setColor(Color.black);
 			}
 			else {
 				g.setColor(Color.RED);
 			}
 			length = stringLength(options[i],g);
-			g.drawString(options[i], GamePanel.WIDTH/2 - length/2, 140 + i * 15);
+			g.drawString(options[i], GamePanel.WIDTH/2 - length/2, 140 + i * 20);
 		}
 		
 	}
