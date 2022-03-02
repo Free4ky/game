@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
 public class LevelMenuState extends GameState{
 
     private static final int NUM_LEVELS = 5; // Количество уровней
-    private static final int OPENED_LEVELS = 1; // Количество открытых уровней
+    private static int OPENED_LEVELS = 1; // Количество открытых уровней
 
     private static final int numInRow = 4; // Количество уровней в строке (отрисованных кружков)
     private static final int rad = 25; // радиус кружка
@@ -80,8 +80,11 @@ public class LevelMenuState extends GameState{
         int counter = 0; // переменная, необходимая для отрисовки следующей стоки кружков-кнопок
         g.setFont(font);
         for (int i = 0; i < levels.length;i++){
-            if(i == currentChoice){
+            if(i == currentChoice && i < OPENED_LEVELS){
                 g.setColor(Color.green); // цвет кнопки зеленый, если пользователь на ней
+            }
+            else if (i == currentChoice && i >= OPENED_LEVELS){
+                g.setColor(Color.red); // цвет кнопки красный, если пользователь на ней и уровень не открыт
             }
             else{
                 g.setColor(Color.lightGray); // иначе цвет серый
@@ -98,7 +101,14 @@ public class LevelMenuState extends GameState{
             }
             else{
                 g.fillOval(GamePanel.WIDTH/2 - (numInRow/2*(btw)) + btw*counter,y + (i/4)*btw, rad,rad); // центровка кружеов по центру экрана
+                g.setColor(Color.lightGray);
+                g.fillOval(GamePanel.WIDTH/2 - (numInRow/2*(btw)) + (btw)*counter + 1,y + (i/4)*btw+1, rad-2,rad-2);
                 g.setColor(fontColor);
+                /*g.fillRect(GamePanel.WIDTH/2 - (numInRow/2*(btw)) + btw*counter+7,y + (i/4)*btw+8,11,10);
+                g.drawOval(GamePanel.WIDTH/2 - (numInRow/2*(btw)) + btw*counter+8,y + (i/4)*btw+5, rad-17,rad-17); // центровка кружеов по центру экрана
+                g.setColor(Color.white);
+                g.drawOval(GamePanel.WIDTH/2 - (numInRow/2*(btw)) + btw*counter+8,y + (i/4)*btw+5, rad-22,rad-22); // центровка кружеов по центру экрана
+                */
                 g.drawString(levels[i],GamePanel.WIDTH/2 + 10 - (numInRow/2*(btw)) + btw*counter,y + (i/4)*btw+17);
                 counter++;
             }
@@ -108,6 +118,9 @@ public class LevelMenuState extends GameState{
     public void select(){
         if(currentChoice == NUM_LEVELS){
             gsm.setState(GameStateManager.MENUSTATE); // выбор кнопки BACK возвращает в меню
+        }
+        else if(!levelStatus[currentChoice]){
+            //nothing happens if current level locked
         }
         else{
             gsm.setState(currentChoice+2); // остальные кнопки соответствуют уровням
