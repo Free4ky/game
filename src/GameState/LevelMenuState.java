@@ -30,7 +30,7 @@ public class LevelMenuState extends GameState{
 
     public LevelMenuState(GameStateManager gsm){
         this.gsm = gsm;
-        bg = new Background("/Backgrounds/7Ik1.gif",1);
+        bg = new Background("/Backgrounds/11.gif",1);
         bg.setVector(0,0);
     }
 
@@ -88,7 +88,7 @@ public class LevelMenuState extends GameState{
                 g.setColor(Color.red); // цвет кнопки красный, если пользователь на ней и уровень не открыт
             }
             else{
-                g.setColor(Color.lightGray); // иначе цвет серый
+                g.setColor(Color.yellow); // иначе цвет серый
             }
             // обнуление счетчика при достижении значения numInRaw (количество кнопок в строке)
             if (counter / numInRow > 0){
