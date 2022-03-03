@@ -7,6 +7,9 @@ import TileMap.Background;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 public class MenuState extends GameState {
 	
@@ -20,20 +23,19 @@ public class MenuState extends GameState {
 		"Quit"
 	};
 
-
-	private JButton jbt;
-
-
 	private Color titleColor;
 	private Font titleFont;
 
 	private Font font;
 
-	
+	private static final int start_y = 125;
+	private ArrayList<Rectangle> buttons;
+
+
 	public MenuState(GameStateManager gsm) {
-		
+
 		this.gsm = gsm;
-		
+
 		try {
 			bg = new Background("/Backgrounds/11.gif", 1);
 			bg.setVector(0, 0);
@@ -45,6 +47,12 @@ public class MenuState extends GameState {
 					34);
 
 			font = new Font("Arial", Font.PLAIN, 12);
+
+			// initialize buttons
+			buttons = new ArrayList<Rectangle>();
+			for (int i = 0; i < options.length; i++){
+				buttons.add(new Rectangle(GamePanel.WIDTH/2 - 30,start_y + i * 20,60,18));
+			}
 
 		}
 		catch(Exception e) {
@@ -73,24 +81,23 @@ public class MenuState extends GameState {
 
 		// draw menu options
 		g.setFont(font);
+		int cnt = 0;
 
-		for(int i = 0; i < options.length; i++){
-			if (currentChoice == i){
+		for(Rectangle r: buttons){
+			if (currentChoice == cnt){
 				g.setColor(Color.GREEN);
-				g.fillRect(GamePanel.WIDTH/2 - 30,125 + i * 20,60,18);
+				g.fillRect(r.x, r.y,r.width,r.height);
 			}
 			else {
 				g.setColor(Color.yellow);
-				g.fillRect(GamePanel.WIDTH / 2 - 30, 125 + i * 20, 60, 18);
+				g.fillRect(r.x, r.y,r.width,r.height);
 			}
 			g.setColor(Color.black);
-			g.drawRect(GamePanel.WIDTH/2 - 30,125 + i * 20,60,18);
+			g.drawRect(r.x, r.y,r.width,r.height);
+			cnt++;
 		}
 
 		for(int i = 0; i < options.length; i++) {
-
-			//g.fillRect(130, 190, 80, 25);
-
 
 			if(i == currentChoice) {
 				g.setColor(Color.black);
@@ -101,7 +108,7 @@ public class MenuState extends GameState {
 			length = stringLength(options[i],g);
 			g.drawString(options[i], GamePanel.WIDTH/2 - length/2, 140 + i * 20);
 		}
-		
+
 	}
 	
 	private void select() {
@@ -136,12 +143,30 @@ public class MenuState extends GameState {
 			}
 		}
 	}
-	public void keyReleased(int k) {}
+	public void keyReleased(int k) {
+
+	}
 
 	// Функция возвращающая длину строки в пикселях
 	// Необходима для центровки текста
 	public static int stringLength(String s, Graphics2D g){
 		return (int) g.getFontMetrics().getStringBounds(s,g).getWidth();
+	}
+
+	public void mouseClicked(MouseEvent e){
+		int x = e.getX();
+		int y = e.getY();
+		for(Rectangle r: buttons){
+			if (r.contains(x/2,y/2)){
+				int i = (r.y - start_y)/20;
+				if (i == currentChoice){
+					select();
+				}
+				else{
+					currentChoice = i;
+				}
+			}
+		}
 	}
 }
 
