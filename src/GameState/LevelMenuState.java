@@ -105,18 +105,24 @@ public class LevelMenuState extends GameState{
             else if (i == currentChoice && i >= OPENED_LEVELS){
                 g.setColor(Color.red); // цвет кнопки красный, если пользователь на ней и уровень не открыт
             }
-            else{
-                g.setColor(Color.yellow); // иначе цвет серый
+            else {
+                g.setColor(Color.black); // иначе цвет серый
             }
 
             if (i == NUM_LEVELS){ // отрисовка последней кнопки BACK
+                g.setColor(Color.yellow);
+                if (i == currentChoice){
+                    g.setColor(Color.GREEN);
+                }
                 g.fillRect(GamePanel.WIDTH - 50,GamePanel.HEIGHT - 30,40,20);
+                g.setColor(Color.BLACK);
+                g.drawRect(back_button.x,back_button.y,back_button.width,back_button.height);
                 g.setColor(fontColor);
                 g.drawString(levels[i],GamePanel.WIDTH - 47,GamePanel.HEIGHT - 16);
             }
             else{
                 g.fillOval(buttons.get(i).getX() - rad/2,buttons.get(i).getY() - rad/2, rad,rad); // центровка кружеов по центру экрана
-                g.setColor(Color.lightGray);
+                g.setColor(Color.yellow);
                 g.fillOval(buttons.get(i).getX() + 1 - rad/2,buttons.get(i).getY() + 1 - rad/2, rad-2,rad-2);
                 g.setColor(fontColor);
                 /*g.fillRect(GamePanel.WIDTH/2 - (numInRow/2*(btw)) + btw*counter+7,y + (i/4)*btw+8,11,10);
