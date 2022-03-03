@@ -8,10 +8,11 @@ import TileMap.Background;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class LevelMenuState extends GameState{
 
-    private static final int NUM_LEVELS = 5; // Количество уровней
+    private static final int NUM_LEVELS = 10; // Количество уровней
     private static int OPENED_LEVELS = 1; // Количество открытых уровней
 
     private static final int numInRow = 4; // Количество уровней в строке (отрисованных кружков)
@@ -27,6 +28,9 @@ public class LevelMenuState extends GameState{
     private Color fontColor; // цвет текста
 
     private Background bg; // фон для меню уровней
+
+    private ArrayList<Coords> buttons;
+    private Rectangle back_button;
 
     public LevelMenuState(GameStateManager gsm){
         this.gsm = gsm;
@@ -57,6 +61,17 @@ public class LevelMenuState extends GameState{
             }
         }
 
+        buttons = new ArrayList<Coords>();
+        back_button = new Rectangle(270,210,40,20);
+        int counter = 0;
+        for (int i = 0; i < NUM_LEVELS; i++){
+            // обнуление счетчика при достижении значения numInRaw (количество кнопок в строке)
+            if (counter / numInRow > 0){
+                counter = 0;
+            }
+            buttons.add(new Coords(GamePanel.WIDTH/2 - (numInRow/2*(btw)) + btw*counter + rad/2,y + (i/4)*btw + rad /2));
+            counter++;
+        }
         try{
             //init bg
             //init font
@@ -81,6 +96,9 @@ public class LevelMenuState extends GameState{
         int counter = 0; // переменная, необходимая для отрисовки следующей стоки кружков-кнопок
         g.setFont(font);
         for (int i = 0; i < levels.length;i++){
+            if (counter / numInRow > 0){
+                counter = 0;
+            }
             if(i == currentChoice && i < OPENED_LEVELS){
                 g.setColor(Color.green); // цвет кнопки зеленый, если пользователь на ней
             }
@@ -90,10 +108,6 @@ public class LevelMenuState extends GameState{
             else{
                 g.setColor(Color.yellow); // иначе цвет серый
             }
-            // обнуление счетчика при достижении значения numInRaw (количество кнопок в строке)
-            if (counter / numInRow > 0){
-                counter = 0;
-            }
 
             if (i == NUM_LEVELS){ // отрисовка последней кнопки BACK
                 g.fillRect(GamePanel.WIDTH - 50,GamePanel.HEIGHT - 30,40,20);
@@ -101,9 +115,9 @@ public class LevelMenuState extends GameState{
                 g.drawString(levels[i],GamePanel.WIDTH - 47,GamePanel.HEIGHT - 16);
             }
             else{
-                g.fillOval(GamePanel.WIDTH/2 - (numInRow/2*(btw)) + btw*counter,y + (i/4)*btw, rad,rad); // центровка кружеов по центру экрана
+                g.fillOval(buttons.get(i).getX() - rad/2,buttons.get(i).getY() - rad/2, rad,rad); // центровка кружеов по центру экрана
                 g.setColor(Color.lightGray);
-                g.fillOval(GamePanel.WIDTH/2 - (numInRow/2*(btw)) + (btw)*counter + 1,y + (i/4)*btw+1, rad-2,rad-2);
+                g.fillOval(buttons.get(i).getX() + 1 - rad/2,buttons.get(i).getY() + 1 - rad/2, rad-2,rad-2);
                 g.setColor(fontColor);
                 /*g.fillRect(GamePanel.WIDTH/2 - (numInRow/2*(btw)) + btw*counter+7,y + (i/4)*btw+8,11,10);
                 g.drawOval(GamePanel.WIDTH/2 - (numInRow/2*(btw)) + btw*counter+8,y + (i/4)*btw+5, rad-17,rad-17); // центровка кружеов по центру экрана
@@ -111,8 +125,8 @@ public class LevelMenuState extends GameState{
                 g.drawOval(GamePanel.WIDTH/2 - (numInRow/2*(btw)) + btw*counter+8,y + (i/4)*btw+5, rad-22,rad-22); // центровка кружеов по центру экрана
                 */
                 g.drawString(levels[i],GamePanel.WIDTH/2 + 10 - (numInRow/2*(btw)) + btw*counter,y + (i/4)*btw+17);
-                counter++;
             }
+            counter++;
         }
     }
 
@@ -154,6 +168,53 @@ public class LevelMenuState extends GameState{
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {
+        int ex = e.getX();
+        int ey = e.getY();
+        for(Coords c: buttons){
+            //делим на scale, чтобы получить достоверные координаты
+            if(rad/GamePanel.SCALE > c.distance(ex/GamePanel.SCALE,ey/GamePanel.SCALE)){ //
+                int row = (c.getY() - y) / btw;
+                int col = numInRow - 1 + (c.getX() - GamePanel.WIDTH/2- (numInRow/2*btw))/btw;
+                //System.out.println(row + " " + col);
+                int index = row*numInRow + col;
+                if(index == currentChoice){
+                    select();
+                }
+                else{
+                    currentChoice = index;
+                }
+            }
+        }
+        if (back_button.contains(ex/2,ey/2)){
+            if (currentChoice == NUM_LEVELS){
+                select();
+            }
+            else{
+                currentChoice = NUM_LEVELS;
+            }
+        }
+    }
 
+    class Coords{
+        private int x;
+        private int y;
+
+        public Coords(int x, int y){
+            this.x = x;
+            this.y = y;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        public int distance(int x, int y){
+            return (int)Math.sqrt(Math.pow((this.x - x),2) + Math.pow((this.y - y),2));
+        }
+    }
 }
