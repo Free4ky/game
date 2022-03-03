@@ -15,7 +15,7 @@ public class MenuState extends GameState {
 	private int currentChoice = 0;
 	private String[] options = {
 		"Start",
-		"Levels",
+		"Options",
 		"Help",
 		"Quit"
 	};
@@ -74,19 +74,18 @@ public class MenuState extends GameState {
 		// draw menu options
 		g.setFont(font);
 
-
-		g.setColor(Color.yellow);
-
-		g.fillRect(130,125,60,18);
-		g.fillRect(130,145,60,18);
-		g.fillRect(130,165,60,18);
-		g.fillRect(130,185,60,18);
-
-		g.setColor(Color.black);
-		g.drawRect(130,125,60,18);
-		g.drawRect(130,145,60,18);
-		g.drawRect(130,165,60,18);
-		g.drawRect(130,185,60,18);
+		for(int i = 0; i < options.length; i++){
+			if (currentChoice == i){
+				g.setColor(Color.GREEN);
+				g.fillRect(GamePanel.WIDTH/2 - 30,125 + i * 20,60,18);
+			}
+			else {
+				g.setColor(Color.yellow);
+				g.fillRect(GamePanel.WIDTH / 2 - 30, 125 + i * 20, 60, 18);
+			}
+			g.setColor(Color.black);
+			g.drawRect(GamePanel.WIDTH/2 - 30,125 + i * 20,60,18);
+		}
 
 		for(int i = 0; i < options.length; i++) {
 
@@ -113,6 +112,9 @@ public class MenuState extends GameState {
 			// help
 		}
 		if(currentChoice == 2) {
+			// help
+		}
+		if(currentChoice == 3) {
 			System.exit(0);
 		}
 	}
