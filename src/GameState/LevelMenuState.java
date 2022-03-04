@@ -5,9 +5,11 @@ package GameState;
 import Main.GamePanel;
 import TileMap.Background;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class LevelMenuState extends GameState{
@@ -31,11 +33,19 @@ public class LevelMenuState extends GameState{
 
     private ArrayList<Coords> buttons;
     private Rectangle back_button;
+    private BufferedImage lock;
 
     public LevelMenuState(GameStateManager gsm){
         this.gsm = gsm;
         bg = new Background("/Backgrounds/11.gif",1);
         bg.setVector(0,0);
+        try{
+            lock = ImageIO.read(getClass().getResourceAsStream("/Backgrounds/lock.png"));
+            lock = GameState.resize(lock,rad/2,rad/2);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -60,6 +70,8 @@ public class LevelMenuState extends GameState{
                 levels[i]="BACK";
             }
         }
+
+        // инициализация картинки замка
 
         buttons = new ArrayList<Coords>();
         back_button = new Rectangle(270,210,40,20);
@@ -91,8 +103,9 @@ public class LevelMenuState extends GameState{
     @Override
     public void draw(Graphics2D g) {
 
-        bg.draw(g);//Отрисовка фона
-
+        //Отрисовка фона
+        bg.draw(g);
+        //Отрисовка замка
         int counter = 0; // переменная, необходимая для отрисовки следующей стоки кружков-кнопок
         g.setFont(font);
         for (int i = 0; i < levels.length;i++){
@@ -125,12 +138,13 @@ public class LevelMenuState extends GameState{
                 g.setColor(Color.yellow);
                 g.fillOval(buttons.get(i).getX() + 1 - rad/2,buttons.get(i).getY() + 1 - rad/2, rad-2,rad-2);
                 g.setColor(fontColor);
-                /*g.fillRect(GamePanel.WIDTH/2 - (numInRow/2*(btw)) + btw*counter+7,y + (i/4)*btw+8,11,10);
-                g.drawOval(GamePanel.WIDTH/2 - (numInRow/2*(btw)) + btw*counter+8,y + (i/4)*btw+5, rad-17,rad-17); // центровка кружеов по центру экрана
-                g.setColor(Color.white);
-                g.drawOval(GamePanel.WIDTH/2 - (numInRow/2*(btw)) + btw*counter+8,y + (i/4)*btw+5, rad-22,rad-22); // центровка кружеов по центру экрана
-                */
-                g.drawString(levels[i],GamePanel.WIDTH/2 + 10 - (numInRow/2*(btw)) + btw*counter,y + (i/4)*btw+17);
+                // Отрисовка замочков
+                if (levels[i] == "X"){
+                    g.drawImage(lock,GamePanel.WIDTH/2 + rad/3 - 1 - (numInRow/2*(btw)) + btw*counter,y + (i/4)*btw + rad/3 - 1,null);
+                }
+                else{
+                    g.drawString(levels[i],GamePanel.WIDTH/2 + 10 - (numInRow/2*(btw)) + btw*counter,y + (i/4)*btw+17);
+                }
             }
             counter++;
         }
