@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id("com.github.johnrengelman.shadow") version "6.1.0"
+}
+
+version = "dev"
+group = "ru"
+
+
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {}
+
+
+java {
+    sourceCompatibility = JavaVersion.toVersion("11")
+    targetCompatibility = JavaVersion.toVersion("11")
+}
+
+
+compileJava {
+    options.warnings = true
+    options.deprecation = true
+    options.compilerArgs += ["-Xlint:all"]
+    options.encoding = 'UTF-8'
+}
+
+compileTestJava {
+    options.warnings = true
+    options.deprecation = true
+    options.compilerArgs += ["-Xlint:all"]
+    options.encoding = 'UTF-8'
+}
+
+javadoc {
+    options.encoding = 'UTF-8'
+}
+
+jar{
+    manifest{
+        attributes 'Main-Class': 'ru.Main.Game'
+    }
+    baseName = 'DemoFat'
+    from {configurations.compile.collect {it.isDirectory() ? it: zipTree(it)}}
+}
