@@ -4,10 +4,12 @@ import ru.Main.GamePanel;
 import  ru.TileMap.*;
 
 import java.awt.*;
+import java.io.Serializable;
 
 // super class for all objects
-public abstract class MapObject {
-
+public abstract class MapObject{
+    public int saved_x;
+    public int saved_y;
     // tile stuff
     protected TileMap tileMap;
     protected int tileSize;
@@ -46,7 +48,7 @@ public abstract class MapObject {
     protected boolean bottomRight;
 
     //animation
-    protected Animation animation;
+    public Animation animation;
     protected int currentAction;
     protected int previousAction;
     protected boolean facingRight; // for flip sprite

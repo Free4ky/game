@@ -1,10 +1,10 @@
 package ru.Entity;
 
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.nio.Buffer;
 
 public class Animation {
-
     private BufferedImage[] frames;
     private int currentFrame;
 

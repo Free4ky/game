@@ -5,9 +5,10 @@ import ru.TileMap.TileMap;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Player extends MapObject{
+public class Player extends MapObject {
 
     // player stuff
     private int health;

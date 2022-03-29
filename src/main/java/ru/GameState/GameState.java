@@ -7,6 +7,9 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 public abstract class GameState {
+
+	public static boolean isPaused;
+	public static boolean isStartPause;
 	
 	protected GameStateManager gsm;
 	
@@ -29,5 +32,4 @@ public abstract class GameState {
 
 		return dimg;
 	}
-
 }

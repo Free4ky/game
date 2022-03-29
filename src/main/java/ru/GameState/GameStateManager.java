@@ -7,16 +7,14 @@ import java.util.ArrayList;
 
 public class GameStateManager {
 	
-	private ArrayList<GameState> gameStates; // массив состояний игры
+	public ArrayList<GameState> gameStates; // массив состояний игры
 	public static int currentState; // текущее состояние игры
 	
 	public static final int MENUSTATE = 0;
 	public static final int LEVEL_MENU = 1;
 	public static final int LEVEL1STATE = 2;
 
-
 	public GameStateManager() {
-
 
 		gameStates = new ArrayList<GameState>();
 		
@@ -24,7 +22,6 @@ public class GameStateManager {
 		gameStates.add(new MenuState(this));
 		gameStates.add(new LevelMenuState(this));
 		gameStates.add(new Level1State(this));
-		
 	}
 
 	// Метод установки состояния игры
