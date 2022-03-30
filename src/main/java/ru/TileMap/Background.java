@@ -1,4 +1,7 @@
-// Класс отвечающий за фон в меню и в будущем в самой игре
+/**
+ * Класс отвечающий за фон в меню и в будущем в самой игре
+ * @version dev
+ */
 package ru.TileMap;
 
 import ru.GameState.GameStateManager;
