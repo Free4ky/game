@@ -36,6 +36,8 @@ public class MenuState extends GameState {
 	private static final int start_y = 125;
 	private ArrayList<Rectangle> buttons;
 
+	private Transition transition;
+
 
 	public MenuState(GameStateManager gsm) {
 
@@ -63,10 +65,12 @@ public class MenuState extends GameState {
 		catch(Exception e) {
 			e.printStackTrace();
 		}
-		
+		init();
 	}
 	
-	public void init() {}
+	public void init() {
+		transition = new Transition();
+	}
 	
 	public void update() {
 		bg.update();
@@ -114,6 +118,9 @@ public class MenuState extends GameState {
 			g.drawString(options[i], GamePanel.WIDTH/2 - length/2, 140 + i * 20);
 		}
 
+		if (!transition.transitionHasPlayed()){
+			transition.draw(g);
+		}
 	}
 	
 	private void select() {

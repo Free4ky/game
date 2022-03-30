@@ -38,6 +38,8 @@ public class LevelMenuState extends GameState{
     private Rectangle back_button;
     private BufferedImage lock;
 
+    private Transition transition;
+
     public LevelMenuState(GameStateManager gsm){
         init();
         this.gsm = gsm;
@@ -98,6 +100,8 @@ public class LevelMenuState extends GameState{
         catch (Exception e){
             e.printStackTrace();
         }
+
+        transition = new Transition();
     }
 
     @Override
@@ -156,6 +160,9 @@ public class LevelMenuState extends GameState{
                 }
             }
             counter++;
+        }
+        if(!transition.transitionHasPlayed()){
+            transition.draw(g);
         }
     }
 
