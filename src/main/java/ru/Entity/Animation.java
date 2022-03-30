@@ -1,3 +1,11 @@
+/**
+ * Класс отвечающий за анимацию объектов карты
+ * Хранит размеченные кадры анимации
+ * Отвечает за задержку между кадрами анимации
+ * @version dev
+ * @since dev
+ */
+
 package ru.Entity;
 
 import java.awt.image.BufferedImage;

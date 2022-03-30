@@ -1,5 +1,8 @@
-// Класс GamePanel является ключевым в проекте. В нем происходит главный цикл игры (game loop)
-// обновление, отрисовка всех элементов игры.
+/**
+ * Класс GamePanel является ключевым в проекте. В нем происходит главный цикл игры (game loop)
+ * обновление, отрисовка всех элементов игры.
+ * @version dev
+ */
 package ru.Main;
 
 import java.awt.*;
@@ -22,7 +25,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// Скорость зависит от производительности компьютера, если её не регулировать, будет слишком быстро
 	private Thread thread;
 	private boolean running;
-	private int FPS = 60;
+	private int FPS = 70;
 	private long targetTime = 1000 / FPS;
 	
 	// image

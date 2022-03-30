@@ -1,3 +1,8 @@
+/**
+ * Точка запуска приложения
+ * @version 0.1
+ */
+
 package ru.Main;
 
 import javax.swing.JFrame;

@@ -1,20 +1,23 @@
-# Тестовый сервер для практической работы 2, вариант 11
-Для запуска скачать [Java 11](https://bell-sw.com/pages/downloads/) или выше
+# Индивидуальный проект по технологии разработки программных приложений
+**Выполнили студенты группы ИКБО-04-20 Нгуен Ван Мань, Ильяс Гочмурадов, Карпов Даниил**
+____
+##Описание проекта
+Программное приложение представляет собой игру в жанре ["Платформер"](https://ru.wikipedia.org/wiki/Платформер). Основу игрового процесса составляют прыжки по платформам, сбор предметов, необходимых для победы над врагами или завершения уровня.
+###Требования приложения
+Для запуска скачать [Java 11](https://bell-sw.com/pages/downloads/) или выше.
+____
+##Шаги разработки
+1. ~~Главное меню~~
+2. ~~Меню уровней~~
+3. ~~Карта~~
+4. ~~Объекты карты~~
+5. ~~Анимации~~
+6. ~~Персонаж~~
+7. ~~Уровень 1~~
+8. ~~Меню внутри уровня~~
+9. Враги
+10. Игровой интерфейс
+11. Собираемые предметы
 
-## Micronaut 2.3.3 Documentation
 
-- [User Guide](https://docs.micronaut.io/2.3.3/guide/index.html)
-- [API Reference](https://docs.micronaut.io/2.3.3/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/2.3.3/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
-
----
-
-## Feature tomcat-server documentation
-
-- [Micronaut Tomcat Server documentation](https://micronaut-projects.github.io/micronaut-servlet/1.0.x/guide/index.html#tomcat)
-
-## Feature http-client documentation
-
-- [Micronaut HTTP Client documentation](https://docs.micronaut.io/latest/guide/index.html#httpClient)
 

@@ -1,3 +1,8 @@
+/**
+ * Класс "плиток" (составных частей) уровней
+ * @version dev
+ */
+
 package ru.TileMap;
 
 import java.awt.image.BufferedImage;

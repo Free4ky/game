@@ -1,3 +1,8 @@
+/**
+ * Класс состояния Главное меню
+ * @author Карпов Даниил, Нгуен Ван Мань
+ */
+
 package ru.GameState;
 
 import ru.Main.Game;

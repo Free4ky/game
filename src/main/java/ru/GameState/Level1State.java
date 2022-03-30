@@ -1,3 +1,8 @@
+/**
+ * Класс отвечающий за первый уровень игры
+ * @version dev
+ */
+
 package ru.GameState;
 
 import ru.Entity.Player;
@@ -20,6 +25,8 @@ public class Level1State extends GameState{
 
     private Player player;
     private InGameMenu menu;
+    private Transition transition;
+    private boolean enteredState;
 
     public Level1State(GameStateManager gsm){
         this.gsm = gsm;
@@ -51,7 +58,10 @@ public class Level1State extends GameState{
         player = new Player(tileMap);
         player.setPosition(100,100);
         bg = new Background("/Backgrounds/grassbg1.gif",0.1);
+
         menu = new InGameMenu(gsm);
+        transition = new Transition();
+        enteredState = true;
     }
 
     @Override
@@ -76,6 +86,9 @@ public class Level1State extends GameState{
 
         if(isPaused){
             menu.draw(g);
+        }
+        if (!transition.transitionHasPlayed()){
+            transition.draw(g);
         }
     }
 
@@ -156,7 +169,6 @@ public class Level1State extends GameState{
     public void mouseClicked(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-        System.out.println(x + ' ' + y);
         for(Rectangle r: menu.buttons){
             if (r.contains(x/GamePanel.SCALE,y/GamePanel.SCALE)){
                 int i = (r.y - menu.start_y)/30;

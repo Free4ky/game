@@ -41,6 +41,7 @@ compileTestJava {
 
 javadoc {
     options.encoding = 'UTF-8'
+
 }
 
 jar{

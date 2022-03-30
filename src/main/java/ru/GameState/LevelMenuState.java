@@ -1,6 +1,9 @@
-// Класс состояния меню урвней
+/**
+ * Класс состояния меню урвней
+ * @author Карпов Даниил, Иляс Гочмурадов
+ * @version dev
+ */
 package ru.GameState;
-
 
 import ru.Main.GamePanel;
 import ru.TileMap.Background;
