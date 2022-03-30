@@ -27,6 +27,7 @@ hs_err_pid*
 .mtj.tmp/
 *.class
 *.jar
+*.gradle/
 *.war
 *.ear
 *.nar
