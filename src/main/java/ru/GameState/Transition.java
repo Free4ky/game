@@ -1,4 +1,9 @@
 package ru.GameState;
+/**
+ *Класс отвечающий за отрисовку перехода между меню и уровнем
+ * @author Карпов Даниил
+ * @version dev
+ */
 
 import ru.Main.GamePanel;
 
