@@ -28,6 +28,7 @@ hs_err_pid*
 *.class
 *.jar
 *.gradle/
+gradle/
 *.war
 *.ear
 *.nar
