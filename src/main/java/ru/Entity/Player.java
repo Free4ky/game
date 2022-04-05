@@ -25,6 +25,8 @@ public class Player extends MapObject {
     private boolean flinching;
     private long flinchTimer;
 
+    public int coinsAmount;
+
     // fireball
     private boolean firing;
     private int fireCost;
@@ -81,6 +83,9 @@ public class Player extends MapObject {
         // fireBalls = new Array<FireBall>;
         scratchDamage = 8;
         scratchRange = 40;
+
+        //coins
+        coinsAmount = 0;
 
         //load sprites
         try{
@@ -293,6 +298,7 @@ public class Player extends MapObject {
 
     public void draw(Graphics2D g){
         setMapPosition();
+
         // draw the player
         // мигание при попадантт по игроку
         // blinking every 100 milliseconds

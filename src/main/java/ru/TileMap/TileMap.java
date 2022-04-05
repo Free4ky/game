@@ -1,13 +1,5 @@
-/**
- * Класс карты уровня.
- * Отвечает за считывание спрайтов, шаблона карты и их инициализацию.
- * Отвечает за главную логику отрисовки уровня.
- * @version dev
- */
-
 package ru.TileMap;
 
-import ru.Main.Game;
 import ru.Main.GamePanel;
 
 import javax.imageio.ImageIO;
@@ -17,6 +9,12 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+/**
+ * Класс карты уровня.
+ * Отвечает за считывание спрайтов, шаблона карты и их инициализацию.
+ * Отвечает за главную логику отрисовки уровня.
+ * @version dev
+ */
 public class TileMap {
 
     // position

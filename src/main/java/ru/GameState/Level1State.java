@@ -5,7 +5,9 @@
 
 package ru.GameState;
 
+import ru.Entity.Coin;
 import ru.Entity.Player;
+import ru.Main.Game;
 import ru.Main.GamePanel;
 import ru.TileMap.Background;
 import ru.TileMap.TileMap;
@@ -16,6 +18,7 @@ import java.awt.event.MouseEvent;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Level1State extends GameState{
 
@@ -27,10 +30,12 @@ public class Level1State extends GameState{
     private InGameMenu menu;
     private Transition transition;
     private boolean enteredState;
+    private ArrayList<Coin> coins;
+    private int numCoins;
 
     public Level1State(GameStateManager gsm){
-        this.gsm = gsm;
         init();
+        this.gsm = gsm;
     }
 
     public void stop(){
@@ -52,8 +57,8 @@ public class Level1State extends GameState{
         isPaused = false;
         isStartPause = false;
         tileMap = new TileMap(30);
-        tileMap.loadTiles("/Tilesets/grasstileset.gif");
-        tileMap.loadMap("/Maps/level1-1.map");
+        tileMap.loadTiles("/Tilesets/new_tilemap3-modified1.png");
+        tileMap.loadMap("/Maps/level1-2.map");
         tileMap.setPosition(0,0);
         player = new Player(tileMap);
         player.setPosition(100,100);
@@ -62,6 +67,15 @@ public class Level1State extends GameState{
         menu = new InGameMenu(gsm);
         transition = new Transition();
         enteredState = true;
+
+        numCoins = 5;
+        coins = new ArrayList<Coin>();
+        Coin c;
+        for(int i = 0; i < numCoins; i++){
+            c = new Coin(tileMap);
+            c.setPosition(i*30, 80);
+            coins.add(c);
+        }
     }
 
     @Override
@@ -69,9 +83,28 @@ public class Level1State extends GameState{
         stop();
         // update player
         player.update();
+        for (int i = 0; i < coins.size(); i++){
+            coins.get(i).update();
+            if(coins.get(i).intersects(player)){
+                coins.remove(i);
+                player.coinsAmount++;
+            }
+        }
+        //if (player.getY() < tileMap.getHeight()/(GamePanel.SCALE * 2)){
+          //  tileMap.setPosition(
+            //        GamePanel.WIDTH/2 - player.getX(),
+              //      GamePanel.HEIGHT/2-player.getY()
+            //);
+       // }
+        //else{
+            //tileMap.setPosition(
+                //    GamePanel.WIDTH/2 - player.getX(),
+              //      GamePanel.HEIGHT/2-player.getY() + tileMap.getTileSize()*3
+            //);
+        //}
         tileMap.setPosition(
                 GamePanel.WIDTH/2 - player.getX(),
-                GamePanel.HEIGHT/2-player.getHeight()
+                GamePanel.HEIGHT/2-player.getY() + tileMap.getTileSize()*2
         );
     }
 
@@ -81,6 +114,12 @@ public class Level1State extends GameState{
         bg.draw(g);
         //draw tile map
         tileMap.draw(g);
+
+        //draw coins
+        for(int i = 0; i < coins.size(); i++){
+            coins.get(i).draw(g);
+        }
+
         // draw the player
         player.draw(g);
 
@@ -90,6 +129,10 @@ public class Level1State extends GameState{
         if (!transition.transitionHasPlayed()){
             transition.draw(g);
         }
+
+        //draw temporary hud
+        g.setColor(Color.BLACK);
+        g.drawString(String.valueOf(player.coinsAmount),0,10);
     }
 
     @Override
@@ -171,7 +214,7 @@ public class Level1State extends GameState{
         int y = e.getY();
         for(Rectangle r: menu.buttons){
             if (r.contains(x/GamePanel.SCALE,y/GamePanel.SCALE)){
-                int i = (r.y - menu.start_y)/30;
+                int i = (r.y - InGameMenu.start_y)/30;
                 if (i == menu.currentChoice){
                     menu.select();
                 }
