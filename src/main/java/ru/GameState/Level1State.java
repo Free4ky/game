@@ -48,6 +48,15 @@ public class Level1State extends GameState{
         //System.out.println(this.gsm ==null);
     }
 
+    public ArrayList<Coin> getCoins() {
+        return coins;
+    }
+    public ArrayList<Enemy> getEnemies(){
+       return enemies;
+    }
+    public Player getPlayer(){
+        return player;
+    }
     public void stop(){
         if (isPaused){
             if (isStartPause){
@@ -272,7 +281,7 @@ public class Level1State extends GameState{
                 }
             }
             if(k==KeyEvent.VK_ENTER){
-                menu.select();
+                menu.select(this);
                 if(menu.currentChoice != 0){
                     bgMusic.stop();
                 }
@@ -283,6 +292,7 @@ public class Level1State extends GameState{
             isStartPause = true;
             // возобновление анимации монет
             if(!isPaused){
+                player.animation.setDelay(400);
                 for(Coin c:coins){
                     c.animation.setDelay(400);
                 }
@@ -326,7 +336,7 @@ public class Level1State extends GameState{
             if (r.contains(x/GamePanel.SCALE,y/GamePanel.SCALE)){
                 int i = (r.y - InGameMenu.start_y)/30;
                 if (i == menu.currentChoice){
-                    menu.select();
+                    menu.select(this);
                 }
                 else{
                     menu.currentChoice = i;

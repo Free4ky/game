@@ -13,7 +13,8 @@ public abstract class GameState {
 
 	public static boolean isPaused;
 	public static boolean isStartPause;
-	
+
+
 	protected GameStateManager gsm;
 	
 	public abstract void init();
@@ -35,4 +36,6 @@ public abstract class GameState {
 
 		return dimg;
 	}
+
+
 }

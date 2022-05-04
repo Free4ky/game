@@ -6,6 +6,9 @@
 
 package ru.GameState;
 
+import ru.Entity.Coin;
+import ru.Entity.Enemy;
+import ru.Entity.FireBall;
 import ru.Main.Game;
 import ru.Main.GamePanel;
 
@@ -55,9 +58,23 @@ public class InGameMenu extends GameState{
         font = new Font("Arial",Font.PLAIN,12);
     }
 
-    public void select(){
+    public void select(GameState gs){
         if (currentChoice == 0){
-            GameState.isPaused = false;
+            if (GameStateManager.currentState == GameStateManager.LEVEL1STATE){
+                Level1State gs1 = (Level1State) gs;
+                GameState.isPaused = false;
+                for(Coin c: gs1.getCoins()){
+                    c.animation.setDelay(200);
+                }
+                for(Enemy e: gs1.getEnemies()){
+                    e.animation.setDelay(300);
+                }
+                for(FireBall fb: gs1.getPlayer().getFireBalls()){
+                    fb.animation.setDelay(70);
+                }
+                gs1.getPlayer().animation.setDelay(400);
+            }
+
         }
         if (currentChoice == 1){
             System.out.println(gsm == null);

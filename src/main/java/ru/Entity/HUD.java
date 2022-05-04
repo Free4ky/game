@@ -44,7 +44,7 @@ public class HUD {
             g.fillOval(58,12,15,15);
         }
 
-        g.setColor(Color.ORANGE);
+        g.setColor(new Color(178,34,34));
         width = (double) player.getFire()/(double)player.getMaxFire() * maxWidth;
         g.fillRect(0,32,(int)width,15);
 
@@ -52,7 +52,7 @@ public class HUD {
             g.fillOval(58,32,15,15);
         }
 
-        g.setColor(Color.YELLOW);
+        g.setColor(new Color(255,215,0));
         width = (double)player.coinsAmount/(double)Coin.NumCoinsOnLevel[GameStateManager.currentState] * maxWidth;
         g.fillRect(0,52,(int)width,15);
 
