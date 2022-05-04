@@ -9,7 +9,8 @@ import java.util.ArrayList;
 
 public class GameStateManager {
 	
-	public ArrayList<GameState> gameStates; // массив состояний игры
+	public GameState[] gameStates; // массив состояний игры
+	public static final int NUMGAMESTATES = 3;
 	public static int currentState; // текущее состояние игры
 	
 	public static final int MENUSTATE = 0;
@@ -18,45 +19,67 @@ public class GameStateManager {
 
 	public GameStateManager() {
 
-		gameStates = new ArrayList<GameState>();
-		
+		gameStates = new GameState[NUMGAMESTATES];
 		currentState = MENUSTATE;
-		gameStates.add(new MenuState(this));
-		gameStates.add(new LevelMenuState(this));
-		gameStates.add(new Level1State(this));
+		loadState(currentState);
+	}
+
+	private void loadState(int state){
+		if(state == MENUSTATE){
+			gameStates[state] = new MenuState(this);
+		}
+		if(state == LEVEL_MENU){
+			gameStates[state] = new LevelMenuState(this);
+		}
+		if(state == LEVEL1STATE){
+			gameStates[state] = new Level1State(this);
+		}
+	}
+
+	private void unloadState(int state){
+
+		gameStates[state] = null;
+
 	}
 
 	// Метод установки состояния игры
 	public void setState(int state) {
+		unloadState(currentState);
 		currentState = state;
-		gameStates.get(currentState).init();
+		loadState(currentState);
+		//gameStates[currentState].init();
 	}
 
 	// Метод обновления
 	public void update() {
-		gameStates.get(currentState).update();
+		try{
+			gameStates[currentState].update();
+		}
+		catch (Exception e){}
 	}
 
 	// Метод отрисовки
 	public void draw(java.awt.Graphics2D g) {
-
-		gameStates.get(currentState).draw(g);
+		try {
+			gameStates[currentState].draw(g);
+		}
+		catch (Exception e){}
 	}
 
 
 	// Обработка пользовательского ввода
 	public void keyPressed(int k) {
 
-		gameStates.get(currentState).keyPressed(k);
+		gameStates[currentState].keyPressed(k);
 	}
 	
 	public void keyReleased(int k) {
 
-		gameStates.get(currentState).keyReleased(k);
+		gameStates[currentState].keyReleased(k);
 	}
 
 	public void mouseClicked(MouseEvent e){
-		gameStates.get(currentState).mouseClicked(e);
+		gameStates[currentState].mouseClicked(e);
 	}
 
 }

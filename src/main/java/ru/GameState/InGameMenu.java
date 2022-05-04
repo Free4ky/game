@@ -40,8 +40,9 @@ public class InGameMenu extends GameState{
     public static final int start_y = GamePanel.WIDTH/2 - (18+30)*3/2;
 
     public InGameMenu(GameStateManager gsm){
-        this.gsm = gsm;
         init();
+        this.gsm = gsm;
+        //System.out.println(gsm == null);
     }
 
     public void init(){
@@ -59,6 +60,7 @@ public class InGameMenu extends GameState{
             GameState.isPaused = false;
         }
         if (currentChoice == 1){
+            System.out.println(gsm == null);
             gsm.setState(GameStateManager.LEVEL_MENU);
         }
         if (currentChoice == 2){

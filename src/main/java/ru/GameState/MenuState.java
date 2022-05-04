@@ -40,7 +40,7 @@ public class MenuState extends GameState {
 
 
 	public MenuState(GameStateManager gsm) {
-
+		init();
 		this.gsm = gsm;
 
 		try {
@@ -65,7 +65,6 @@ public class MenuState extends GameState {
 		catch(Exception e) {
 			e.printStackTrace();
 		}
-		init();
 	}
 	
 	public void init() {

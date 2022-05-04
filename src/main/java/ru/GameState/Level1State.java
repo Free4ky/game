@@ -5,6 +5,7 @@
 
 package ru.GameState;
 
+import ru.Audio.AudioPlayer;
 import ru.Entity.*;
 import ru.Entity.Enemies.Slugger;
 import ru.Main.Game;
@@ -38,9 +39,13 @@ public class Level1State extends GameState{
 
     private HUD hud;
 
+    // Audio stuff
+    private AudioPlayer bgMusic;
+
     public Level1State(GameStateManager gsm){
-        init();
         this.gsm = gsm;
+        init();
+        //System.out.println(this.gsm ==null);
     }
 
     public void stop(){
@@ -107,6 +112,9 @@ public class Level1State extends GameState{
 
         // Explosions
         explosions = new ArrayList<Explosion>();
+
+        bgMusic = new AudioPlayer("/Music/level1-1.mp3");
+        bgMusic.play();
 
     }
 
@@ -268,6 +276,7 @@ public class Level1State extends GameState{
             }
             if(k==KeyEvent.VK_ENTER){
                 menu.select();
+                bgMusic.stop();
             }
         }
         if (k==KeyEvent.VK_ESCAPE){
