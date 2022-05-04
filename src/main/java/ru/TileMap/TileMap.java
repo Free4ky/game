@@ -56,6 +56,9 @@ public class TileMap {
         numColsToDraw = GamePanel.WIDTH / tileSize + 2;
         tween = 1;
     }
+    public void setTween(double tween){
+        this.tween = tween;
+    }
     // load tiles into the memory
     public void loadTiles(String s){
         try{
@@ -121,11 +124,11 @@ public class TileMap {
     public int getTileSize() {
         return tileSize;
     }
-    public int getX(){
-        return (int)x;
+    public double getX(){
+        return x;
     }
-    public int getY(){
-        return (int)y;
+    public double getY(){
+        return y;
     }
     public int getWidth(){
         return width;

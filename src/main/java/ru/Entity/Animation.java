@@ -18,6 +18,7 @@ public class Animation {
 
     private long startTime;
     private long delay;
+    public long savedDelay;
 
     private boolean playedOnce;
 

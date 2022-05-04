@@ -49,9 +49,11 @@ public class Coin extends MapObject{
         long elapsed = (System.nanoTime() - timer)/1000000;
 
         int n_y = (int)(15*Math.sin(Math.PI*elapsed/350));
-        System.out.println(n_y);
+        //System.out.println(n_y);
         animation.update();
-        this.setPosition(this.x,y + n_y/12);
+        this.y = y + n_y/12;
+        //System.out.println(saved_y);
+        this.setPosition(this.x,y);
     }
     public void draw(Graphics2D g){
         setMapPosition();

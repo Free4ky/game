@@ -9,11 +9,14 @@ import  ru.TileMap.*;
 
 import java.awt.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 // super class for all objects
 public abstract class MapObject{
     public int saved_x;
     public int saved_y;
+    public double saved_dy;
+    public double saved_dx;
     // tile stuff
     protected TileMap tileMap;
     protected int tileSize;
@@ -239,5 +242,48 @@ public abstract class MapObject{
                 x + xmap - width > GamePanel.WIDTH ||
                 y + ymap + height < 0 ||
                 y + ymap - height > GamePanel.HEIGHT;
+    }
+
+    public void draw(Graphics2D g){
+        if (facingRight){
+            g.drawImage(
+                    animation.getImage(),
+                    (int)(x+xmap-width/2),
+                    (int)(y+ymap - height/2),
+                    null
+            );
+        }
+        else{
+            g.drawImage(
+                    animation.getImage(),
+                    // starting coordinate is left side of frame
+                    (int)(x + xmap - width/2 + width),
+                    (int)(y + ymap - height/2),
+                    // draw frame from right to left
+                    -width,
+                    height,
+                    null
+            );
+        }
+    }
+    public double getDy(){
+        return dy;
+    }
+
+    public double getDx() {
+        return dx;
+    }
+
+    public void saveState(){
+        saved_dx = dx;
+        saved_dy = dy;
+        saved_x = (int)x;
+        saved_y = (int)y;
+    }
+    public void uploadState(){
+        long stopDelay = 1000000000;
+        setVector(saved_dx,saved_dy);
+        setPosition(saved_x, saved_y);
+        animation.setDelay(stopDelay);
     }
 }

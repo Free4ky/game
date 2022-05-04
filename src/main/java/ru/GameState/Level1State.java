@@ -5,8 +5,8 @@
 
 package ru.GameState;
 
-import ru.Entity.Coin;
-import ru.Entity.Player;
+import ru.Entity.*;
+import ru.Entity.Enemies.Slugger;
 import ru.Main.Game;
 import ru.Main.GamePanel;
 import ru.TileMap.Background;
@@ -33,6 +33,11 @@ public class Level1State extends GameState{
     private ArrayList<Coin> coins;
     private int numCoins;
 
+    private ArrayList<Enemy> enemies;
+    private  ArrayList<Explosion> explosions;
+
+    private HUD hud;
+
     public Level1State(GameStateManager gsm){
         init();
         this.gsm = gsm;
@@ -41,22 +46,39 @@ public class Level1State extends GameState{
     public void stop(){
         if (isPaused){
             if (isStartPause){
-                player.saved_x = player.getX();
-                player.saved_y = player.getY() - 4;
+                player.saveState();
+                for(Coin c: coins){
+                    c.saveState();
+                }
+                //MapObject.saveState(enemies);
+                for(Enemy e: enemies){
+                    e.saveState();
+                }
+                for(FireBall fb: player.getFireBalls()){
+                    fb.saveState();
+                }
                 isStartPause = false;
             }
             else{
-                player.setPosition(player.saved_x, player.saved_y);
-                player.animation.setDelay(1000000000);
+                player.uploadState();
+                for (Coin c: coins){
+                    c.uploadState();
+                }
+                for(Enemy e: enemies){
+                    e.uploadState();
+                }
+                for(FireBall fb: player.getFireBalls()){
+                    fb.uploadState();
+                }
             }
         }
     }
-
     @Override
     public void init() {
         isPaused = false;
         isStartPause = false;
         tileMap = new TileMap(30);
+        tileMap.setTween(0.07);
         tileMap.loadTiles("/Tilesets/new_tilemap3-modified1.png");
         tileMap.loadMap("/Maps/level1-2.map");
         tileMap.setPosition(0,0);
@@ -75,6 +97,31 @@ public class Level1State extends GameState{
             c = new Coin(tileMap);
             c.setPosition(i*30, 80);
             coins.add(c);
+        }
+
+        // Create enemies
+        populateEnemies();
+
+
+        hud = new HUD(player);
+
+        // Explosions
+        explosions = new ArrayList<Explosion>();
+
+    }
+
+    private void populateEnemies(){
+        enemies = new ArrayList<Enemy>();
+        Slugger s;
+        Point[] points = new Point[]{
+                new Point(100,100),
+                new Point(110,100),
+                new Point(120,100)
+        };
+        for(int i = 0; i < points.length; i++){
+            s = new Slugger(tileMap);
+            s.setPosition(points[i].x, points[i].y);
+            enemies.add(s);
         }
     }
 
@@ -106,6 +153,33 @@ public class Level1State extends GameState{
                 GamePanel.WIDTH/2 - player.getX(),
                 GamePanel.HEIGHT/2-player.getY() + tileMap.getTileSize()*2
         );
+
+        // set background
+        bg.setPosition(tileMap.getX(), 0);
+
+        // attack enemies
+        player.checkAttack(enemies);
+
+        //update all enemies
+        for(int i = 0; i < enemies.size(); i++){
+            Enemy e = enemies.get(i);
+            e.update();
+            if(e.isDead()){
+                explosions.add(
+                        new Explosion(e.getX(),e.getY()));
+                enemies.remove(i);
+                i--;
+            }
+        }
+        // update all explosions
+        for(int i = 0; i < explosions.size(); i++){
+            Explosion e = explosions.get(i);
+            e.update();
+            if(e.shouldRemove()){
+                explosions.remove(i);
+                i--;
+            }
+        }
     }
 
     @Override
@@ -123,6 +197,19 @@ public class Level1State extends GameState{
         // draw the player
         player.draw(g);
 
+        // draw all enemies
+        for(int i = 0; i < enemies.size(); i++){
+            enemies.get(i).draw(g);
+        }
+
+        // draw explosions
+        for(int i = 0; i < explosions.size(); i++){
+            explosions.get(i).setMapPosition(
+                    (int)tileMap.getX(), (int)tileMap.getY()
+            );
+            explosions.get(i).draw(g);
+        }
+
         if(isPaused){
             menu.draw(g);
         }
@@ -133,6 +220,9 @@ public class Level1State extends GameState{
         //draw temporary hud
         g.setColor(Color.BLACK);
         g.drawString(String.valueOf(player.coinsAmount),0,10);
+
+        // draw hud
+        hud.draw(g);
     }
 
     @Override
@@ -183,6 +273,18 @@ public class Level1State extends GameState{
         if (k==KeyEvent.VK_ESCAPE){
             isPaused = !isPaused;
             isStartPause = true;
+            // возобновление анимации монет
+            if(!isPaused){
+                for(Coin c:coins){
+                    c.animation.setDelay(400);
+                }
+                for(Enemy e: enemies){
+                    e.animation.setDelay(300);
+                }
+                for(FireBall fb: player.getFireBalls()){
+                    fb.animation.setDelay(70);
+                }
+            }
         }
     }
 

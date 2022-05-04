@@ -31,7 +31,8 @@ public class Player extends MapObject {
     private boolean firing;
     private int fireCost;
     private int fireBallDamage;
-    //private ArrayList<FireBall> fireballs;
+    // projectiles
+    private ArrayList<FireBall> fireBalls;
 
     //scratch
     private boolean scratching;
@@ -80,7 +81,7 @@ public class Player extends MapObject {
 
         fireCost = 200;
         fireBallDamage = 5;
-        // fireBalls = new Array<FireBall>;
+        fireBalls = new ArrayList<FireBall>();
         scratchDamage = 8;
         scratchRange = 40;
 
@@ -229,6 +230,37 @@ public class Player extends MapObject {
             }
         }
 
+        // fireball attack
+        fire += 1;
+        if(fire > maxFire) fire = maxFire;
+        if(firing && currentAction != FIREBALL){
+            // if we have enough energy
+            if(fire > fireCost){
+                fire -= fireCost;
+                FireBall fb = new FireBall(tileMap, facingRight);
+                // create a fireball at the same position as player
+                fb.setPosition(x, y);
+                fireBalls.add(fb);
+
+            }
+        }
+        // update fireBalls
+        for(int i = 0; i < fireBalls.size(); i++){
+            fireBalls.get(i).update();
+            if (fireBalls.get(i).shouldRemove()){
+                fireBalls.remove(i);
+                i--;
+            }
+        }
+
+        // check done flinching
+        if(flinching){
+            long elapsed = (System.nanoTime() - flinchTimer)/1000000;
+            if(elapsed > 1000){
+                flinching = false;
+            }
+        }
+
         // set animations
         if(scratching){
             if(currentAction != SCRATCHING){
@@ -298,6 +330,10 @@ public class Player extends MapObject {
 
     public void draw(Graphics2D g){
         setMapPosition();
+        // draw fireBalls
+        for(FireBall fb:fireBalls){
+            fb.draw(g);
+        }
 
         // draw the player
         // мигание при попадантт по игроку
@@ -309,25 +345,59 @@ public class Player extends MapObject {
             }
         }
 
-        if (facingRight){
-            g.drawImage(
-                    animation.getImage(),
-                    (int)(x+xmap-width/2),
-                    (int)(y+ymap - height/2),
-                    null
-            );
+        super.draw(g);
+    }
+
+    public void checkAttack(ArrayList<Enemy> enemies){
+
+        for(int i = 0; i < enemies.size(); i++){
+            Enemy e = enemies.get(i);
+            // scratch attack
+
+            if(scratching){
+                if(facingRight){
+                    if(
+                        e.getX() > x &&
+                        e.getX() < x + scratchRange &&
+                        e.getY() > y - height/2 &&
+                        e.getY() < y + height/2
+                    ){
+                        e.hit(scratchDamage);
+                    }
+                }
+                else{
+                    if(
+                        e.getX() < x &&
+                        e.getX() > x - scratchRange &&
+                        e.getY() > y - height / 2 &&
+                        e.getY() < y + height / 2
+                    ){
+                        e.hit(scratchDamage);
+                    }
+                }
+            }
+
+            for(int j = 0; j < fireBalls.size(); j++){
+                if(fireBalls.get(j).intersects(e)){
+                    e.hit(fireBallDamage);
+                    fireBalls.get(j).setHit();
+                    break;
+                }
+            }
+            // check enemy collision
+            if(intersects(e)){
+                hit(e.getDamage());
+            }
         }
-        else{
-            g.drawImage(
-                    animation.getImage(),
-                    // starting coordinate is left side of frame
-                    (int)(x + xmap - width/2 + width),
-                    (int)(y + ymap - height/2),
-                    // draw frame from right to left
-                    -width,
-                    height,
-                    null
-            );
-        }
+    }
+    public void hit(int damage){
+        if(flinching) return;
+        health -= damage;
+        if(health < 0) health = 0;
+        flinching = true;
+        flinchTimer = System.nanoTime();
+    }
+    public ArrayList<FireBall> getFireBalls() {
+        return fireBalls;
     }
 }
