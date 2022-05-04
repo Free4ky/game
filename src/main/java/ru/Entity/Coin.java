@@ -1,5 +1,6 @@
 package ru.Entity;
 
+import ru.Audio.AudioPlayer;
 import ru.TileMap.TileMap;
 
 import javax.imageio.ImageIO;
@@ -9,6 +10,7 @@ import java.awt.image.BufferedImage;
 public class Coin extends MapObject{
 
     public static int NumCoinsOnLevel[] = new int[9];
+    private AudioPlayer coinEffect;
 
     private BufferedImage[] sprites;
     int numFrames = 5;
@@ -19,6 +21,11 @@ public class Coin extends MapObject{
         super(tm);
         init();
     }
+
+    public AudioPlayer getCoinEffect() {
+        return coinEffect;
+    }
+
     public void init(){
         timer = System.nanoTime();
         width = 16;
@@ -26,6 +33,9 @@ public class Coin extends MapObject{
         cwidth = 12;
         cheight = 12;
         try{
+
+            coinEffect = new AudioPlayer("/SFX/Coin_1.mp3");
+
             BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Items/MonedaD.png"));
             sprites = new BufferedImage[numFrames];
             for (int i = 0; i < numFrames; i++){
@@ -45,8 +55,6 @@ public class Coin extends MapObject{
         currentAction = ROTATE;
         animation.setFrames(sprites);
         animation.setDelay(200);
-
-
     }
 
     public void update(){

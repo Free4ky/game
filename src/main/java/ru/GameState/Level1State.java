@@ -151,6 +151,7 @@ public class Level1State extends GameState{
         for (int i = 0; i < coins.size(); i++){
             coins.get(i).update();
             if(coins.get(i).intersects(player)){
+                coins.get(i).getCoinEffect().play();
                 coins.remove(i);
                 player.coinsAmount++;
             }
