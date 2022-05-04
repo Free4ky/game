@@ -111,7 +111,7 @@ public class MenuState extends GameState {
 				g.setColor(Color.black);
 			}
 			else {
-				g.setColor(Color.RED);
+				g.setColor(new Color(128,0,0));
 			}
 			length = stringLength(options[i],g);
 			g.drawString(options[i], GamePanel.WIDTH/2 - length/2, 140 + i * 20);

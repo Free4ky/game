@@ -8,8 +8,10 @@ import java.awt.image.BufferedImage;
 
 public class Coin extends MapObject{
 
+    public static int NumCoinsOnLevel[] = new int[9];
+
     private BufferedImage[] sprites;
-    int numFrames = 2;
+    int numFrames = 5;
     int ROTATE = 0;
     long timer;
 
@@ -19,12 +21,12 @@ public class Coin extends MapObject{
     }
     public void init(){
         timer = System.nanoTime();
-        width = 30;
-        height = 30;
-        cwidth = 20;
-        cheight = 20;
+        width = 16;
+        height = 16;
+        cwidth = 12;
+        cheight = 12;
         try{
-            BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Player/CoinSprite.png"));
+            BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Items/MonedaD.png"));
             sprites = new BufferedImage[numFrames];
             for (int i = 0; i < numFrames; i++){
                 sprites[i] = spriteSheet.getSubimage(
@@ -42,7 +44,9 @@ public class Coin extends MapObject{
         animation = new Animation();
         currentAction = ROTATE;
         animation.setFrames(sprites);
-        animation.setDelay(400);
+        animation.setDelay(200);
+
+
     }
 
     public void update(){

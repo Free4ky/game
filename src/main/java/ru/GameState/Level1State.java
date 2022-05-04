@@ -96,6 +96,7 @@ public class Level1State extends GameState{
         enteredState = true;
 
         numCoins = 5;
+        Coin.NumCoinsOnLevel[GameStateManager.LEVEL1STATE] = numCoins;
         coins = new ArrayList<Coin>();
         Coin c;
         for(int i = 0; i < numCoins; i++){
@@ -225,10 +226,6 @@ public class Level1State extends GameState{
             transition.draw(g);
         }
 
-        //draw temporary hud
-        g.setColor(Color.BLACK);
-        g.drawString(String.valueOf(player.coinsAmount),0,10);
-
         // draw hud
         hud.draw(g);
     }
@@ -276,7 +273,9 @@ public class Level1State extends GameState{
             }
             if(k==KeyEvent.VK_ENTER){
                 menu.select();
-                bgMusic.stop();
+                if(menu.currentChoice != 0){
+                    bgMusic.stop();
+                }
             }
         }
         if (k==KeyEvent.VK_ESCAPE){
