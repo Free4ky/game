@@ -33,6 +33,13 @@ public class Animation {
         playedOnce = false;
     }
 
+    public void setFrames(BufferedImage[] frames, int frame){
+        this.frames = frames;
+        currentFrame = 0;
+        startTime = System.nanoTime();
+        playedOnce = false;
+    }
+
     public void setDelay(long d){
         this.delay = d;
     }

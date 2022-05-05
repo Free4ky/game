@@ -8,6 +8,7 @@ package ru.GameState;
 import ru.Audio.AudioPlayer;
 import ru.Entity.*;
 import ru.Entity.Enemies.Slugger;
+import ru.Entity.Enemies.Spike;
 import ru.Main.Game;
 import ru.Main.GamePanel;
 import ru.TileMap.Background;
@@ -35,12 +36,16 @@ public class Level1State extends GameState{
     private int numCoins;
 
     private ArrayList<Enemy> enemies;
-    private  ArrayList<Explosion> explosions;
+    private ArrayList<Explosion> explosions;
+    private ArrayList<CoinPickUp> coinPickUps;
 
     private HUD hud;
 
     // Audio stuff
     private AudioPlayer bgMusic;
+
+    // waterFall
+    private ArrayList<WaterFall> waterFalls;
 
     public Level1State(GameStateManager gsm){
         this.gsm = gsm;
@@ -104,6 +109,7 @@ public class Level1State extends GameState{
         transition = new Transition();
         enteredState = true;
 
+        coinPickUps = new ArrayList<CoinPickUp>();
         numCoins = 5;
         Coin.NumCoinsOnLevel[GameStateManager.LEVEL1STATE] = numCoins;
         coins = new ArrayList<Coin>();
@@ -117,6 +123,8 @@ public class Level1State extends GameState{
         // Create enemies
         populateEnemies();
 
+        // create WaterFall
+        createWaterFall(10);
 
         hud = new HUD(player);
 
@@ -134,12 +142,32 @@ public class Level1State extends GameState{
         Point[] points = new Point[]{
                 new Point(100,100),
                 new Point(110,100),
-                new Point(120,100)
+                new Point(120,100),
+                new Point(100,100)
         };
-        for(int i = 0; i < points.length; i++){
+        for(int i = 0; i < points.length - 1; i++){
             s = new Slugger(tileMap);
             s.setPosition(points[i].x, points[i].y);
             enemies.add(s);
+        }
+        Spike spike = new Spike(tileMap);
+        spike.setPosition(points[points.length-1].x,points[points.length-1].y);
+        enemies.add(spike);
+    }
+
+    public void createWaterFall(int waterFallLength){
+        waterFalls = new ArrayList<WaterFall>();
+        for(int i = 0; i < waterFallLength; i++){
+            WaterFall wf;
+            if (i == waterFallLength - 1){
+                wf = new WaterFall(tileMap, 0, 1);
+                wf.setPosition(150,100 + (waterFallLength-2)*waterFalls.get(i-1).getHeight() + wf.getHeight());
+            }
+            else{
+                wf = new WaterFall(tileMap, i % 4, 0);
+                wf.setPosition(150,100 + i*wf.getHeight());
+            }
+            waterFalls.add(wf);
         }
     }
 
@@ -149,11 +177,21 @@ public class Level1State extends GameState{
         // update player
         player.update();
         for (int i = 0; i < coins.size(); i++){
-            coins.get(i).update();
-            if(coins.get(i).intersects(player)){
-                coins.get(i).getCoinEffect().play();
+            Coin c = coins.get(i);
+            c.update();
+            if(c.intersects(player)){
+                c.getCoinEffect().play();
+                coinPickUps.add(new CoinPickUp(c.getX(),c.getY()));
                 coins.remove(i);
                 player.coinsAmount++;
+            }
+        }
+        for(int i = 0; i < coinPickUps.size(); i++){
+            CoinPickUp cpu = coinPickUps.get(i);
+            cpu.update();
+            if(cpu.shouldRemove()){
+                coinPickUps.remove(i);
+                i--;
             }
         }
         //if (player.getY() < tileMap.getHeight()/(GamePanel.SCALE * 2)){
@@ -199,6 +237,11 @@ public class Level1State extends GameState{
                 i--;
             }
         }
+
+        //update WaterFall
+        for(WaterFall part:waterFalls){
+            part.update();
+        }
     }
 
     @Override
@@ -228,12 +271,24 @@ public class Level1State extends GameState{
             );
             explosions.get(i).draw(g);
         }
+        // draw coins pick up
+        for(int i = 0; i < coinPickUps.size(); i++){
+            coinPickUps.get(i).setMapPosition(
+                    (int)tileMap.getX(), (int)tileMap.getY()
+            );
+            coinPickUps.get(i).draw(g);
+        }
 
         if(isPaused){
             menu.draw(g);
         }
         if (!transition.transitionHasPlayed()){
             transition.draw(g);
+        }
+
+        // draw waterFall
+        for(WaterFall part: waterFalls){
+            part.draw(g);
         }
 
         // draw hud

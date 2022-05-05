@@ -4,24 +4,11 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Explosion {
+public class Explosion extends MapEffect{
 
-    private int x;
-    private int y;
-    private int xmap;
-    private int ymap;
-
-    private int width;
-    private int height;
-
-    private Animation animation;
-    private BufferedImage[] sprites;
-
-    private boolean remove;
 
     public Explosion(int x, int y){
-        this.x = x;
-        this.y = y;
+        super(x,y);
 
         width = 30;
         height = 30;

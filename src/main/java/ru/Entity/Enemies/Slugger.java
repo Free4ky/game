@@ -72,6 +72,9 @@ public class Slugger extends Enemy {
 
         if(falling){
             dy+= fallSpeed;
+            if(dy > maxFallSpeed){
+                dy = maxFallSpeed;
+            }
         }
     }
 

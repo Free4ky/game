@@ -36,7 +36,7 @@ public class Coin extends MapObject{
 
             coinEffect = new AudioPlayer("/SFX/Coin_1.mp3");
 
-            BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Items/MonedaD.png"));
+            BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream("/Sprites/Items/Coins/MonedaD.png"));
             sprites = new BufferedImage[numFrames];
             for (int i = 0; i < numFrames; i++){
                 sprites[i] = spriteSheet.getSubimage(
