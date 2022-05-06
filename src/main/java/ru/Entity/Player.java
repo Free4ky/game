@@ -19,6 +19,8 @@ import java.util.HashMap;
 public class Player extends MapObject {
 
     // player stuff
+    private boolean isDead;
+    private boolean animBlock;
     private int health;
     private int maxHealth;
     private int fire;
@@ -48,7 +50,7 @@ public class Player extends MapObject {
     private ArrayList<BufferedImage[]> sprites;
     //number of frames inside each of animation actions
     private final int[] numFrames = {
-            2, 8, 1, 2, 4, 2, 5
+            2, 8, 1, 2, 4, 2, 5, 8
     };
     //animation actions (enums)
 
@@ -59,6 +61,7 @@ public class Player extends MapObject {
     private static final int GLIDING = 4;
     private static final int FIREBALL = 5;
     private static final int SCRATCHING = 6;
+    private static final int DEATH = 7;
 
     // sound effects
     private HashMap<String, AudioPlayer> sfx;
@@ -67,10 +70,13 @@ public class Player extends MapObject {
     public Player(TileMap tm){
         super(tm);
 
+        isDead = false;
+        animBlock = false;
+
         width = 30;
         height = 30;
         cwidth = 20;
-        cheight = 20;
+        cheight = 27;
 
         moveSpeed = 0.3;
         maxSpeed = 1.6;
@@ -127,6 +133,18 @@ public class Player extends MapObject {
                 }
                 sprites.add(bi);
             }
+            BufferedImage deathSpriteSheet = ImageIO.read(
+                    getClass().getResourceAsStream("/Sprites/Player/PlayerDeathAnimationT1.png"));
+            BufferedImage[] deathSprite = new BufferedImage[numFrames[numFrames.length-1]];
+            for(int i = 0; i < numFrames[numFrames.length-1]; i++){
+                deathSprite[i] = deathSpriteSheet.getSubimage(
+                        i*width,
+                        0,
+                        width,
+                        height
+                );
+            }
+            sprites.add(deathSprite);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -325,7 +343,16 @@ public class Player extends MapObject {
                 width = 30;
             }
         }
-        else {
+        else if(health == 0 && !isDead){
+            if (currentAction != DEATH){
+                currentAction = DEATH;
+                flinching = false;
+                animation.setFrames(sprites.get(DEATH));
+                animation.setDelay(170);
+                isDead = true;
+            }
+        }
+        else if(!isDead) {
             if(currentAction != IDLE){
                 currentAction = IDLE;
                 animation.setFrames(sprites.get(IDLE));
@@ -333,7 +360,16 @@ public class Player extends MapObject {
                 width = 30;
             }
         }
-        animation.update();
+        else{
+            if(animation.hasPlayedOnce()){
+                animation.setFrame(sprites.get(DEATH).length - 1);
+                animBlock = true;
+            }
+        }
+
+        if(!animBlock){
+            animation.update();
+        }
 
         //set direction
         if (currentAction != SCRATCHING && currentAction != FIREBALL){

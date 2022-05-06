@@ -5,6 +5,8 @@
  */
 package ru.GameState;
 
+import ru.Audio.AudioPlayer;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -22,6 +24,8 @@ public abstract class GameState {
 	public abstract void draw(Graphics2D g);
 	public abstract void keyPressed(int k);
 	public abstract void keyReleased(int k);
+	// Audio stuff
+	public AudioPlayer bgMusic;
 
 
 	public abstract void mouseClicked(MouseEvent e);

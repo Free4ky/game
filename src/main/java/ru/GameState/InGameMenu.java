@@ -21,17 +21,17 @@ import java.util.ArrayList;
 
 public class InGameMenu extends GameState{
 
-    private Color fontColor;
-    private Font font;
+    protected Color fontColor;
+    protected Font font;
 
     public ArrayList<Rectangle> buttons;
-    private int button_width = 65;
-    private int button_height = 18;
-    private int space_between = 30;
-    private int num_buttons;
-    private GameStateManager gsm;
+    protected int button_width = 65;
+    protected int button_height = 18;
+    protected int space_between = 30;
+    protected int num_buttons;
+    protected GameStateManager gsm;
 
-    private String name = "Options";
+    protected String name = "Options";
 
     public int currentChoice = 0;
 
@@ -77,7 +77,6 @@ public class InGameMenu extends GameState{
 
         }
         if (currentChoice == 1){
-            System.out.println(gsm == null);
             gsm.setState(GameStateManager.LEVEL_MENU);
         }
         if (currentChoice == 2){
@@ -120,6 +119,7 @@ public class InGameMenu extends GameState{
             g.drawString(options[i],GamePanel.WIDTH/2-len/2,start_y+i*30 + 15);
         }
     }
+
 
     @Override
     public void update() {

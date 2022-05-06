@@ -29,7 +29,10 @@ public class Level1State extends GameState{
     private Background bg;
 
     private Player player;
+
     private InGameMenu menu;
+    private GameOverMenu goMenu;
+    private boolean gameOver;
     private Transition transition;
     private boolean enteredState;
     private ArrayList<Coin> coins;
@@ -41,9 +44,6 @@ public class Level1State extends GameState{
 
     private HUD hud;
 
-    // Audio stuff
-    private AudioPlayer bgMusic;
-
     // waterFall
     private ArrayList<WaterFall> waterFalls;
 
@@ -52,6 +52,8 @@ public class Level1State extends GameState{
         init();
         //System.out.println(this.gsm ==null);
     }
+
+
 
     public ArrayList<Coin> getCoins() {
         return coins;
@@ -94,37 +96,34 @@ public class Level1State extends GameState{
     }
     @Override
     public void init() {
+        gameOver = false;
         isPaused = false;
         isStartPause = false;
         tileMap = new TileMap(30);
         tileMap.setTween(0.07);
-        tileMap.loadTiles("/Tilesets/new_tilemap3-modified1.png");
-        tileMap.loadMap("/Maps/level1-2.map");
+        //tileMap.loadTiles("/Tilesets/new_tilemap3-modified1.png");
+        tileMap.loadTiles("/Tilesets/TileSetNew.png");
+
+        //tileMap.loadMap("/Maps/level1-2.map");
+        tileMap.loadMap("/Maps/testmap.map");
+
         tileMap.setPosition(0,0);
         player = new Player(tileMap);
-        player.setPosition(100,100);
+        player.setPosition(100,150);
         bg = new Background("/Backgrounds/grassbg1.gif",0.1);
 
         menu = new InGameMenu(gsm);
         transition = new Transition();
         enteredState = true;
 
-        coinPickUps = new ArrayList<CoinPickUp>();
-        numCoins = 5;
-        Coin.NumCoinsOnLevel[GameStateManager.LEVEL1STATE] = numCoins;
-        coins = new ArrayList<Coin>();
-        Coin c;
-        for(int i = 0; i < numCoins; i++){
-            c = new Coin(tileMap);
-            c.setPosition(i*30, 80);
-            coins.add(c);
-        }
+        // create coins
+        createCoins(5,600,160);
 
         // Create enemies
         populateEnemies();
 
         // create WaterFall
-        createWaterFall(10);
+        createWaterFall(14,450,10);
 
         hud = new HUD(player);
 
@@ -133,17 +132,34 @@ public class Level1State extends GameState{
 
         bgMusic = new AudioPlayer("/Music/level1-1.mp3");
         bgMusic.play();
+        bgMusic.loop();
 
+        //long x = bgMusic.getDuration("/Music/level1-1.mp3");
+        //System.out.println(x);
+
+    }
+
+    private void createCoins(int num,int x, int y){
+        coinPickUps = new ArrayList<CoinPickUp>();
+        numCoins = num;
+        Coin.NumCoinsOnLevel[GameStateManager.LEVEL1STATE] = numCoins;
+        coins = new ArrayList<Coin>();
+        Coin c;
+        for(int i = 0; i < numCoins; i++){
+            c = new Coin(tileMap);
+            c.setPosition(x + i*30, y);
+            coins.add(c);
+        }
     }
 
     private void populateEnemies(){
         enemies = new ArrayList<Enemy>();
         Slugger s;
         Point[] points = new Point[]{
-                new Point(100,100),
-                new Point(110,100),
-                new Point(120,100),
-                new Point(100,100)
+                new Point(650,150),
+                new Point(670,150),
+                new Point(690,150),
+                new Point(100,150)
         };
         for(int i = 0; i < points.length - 1; i++){
             s = new Slugger(tileMap);
@@ -155,27 +171,43 @@ public class Level1State extends GameState{
         enemies.add(spike);
     }
 
-    public void createWaterFall(int waterFallLength){
+    public void createWaterFall(int waterFallLength, int x, int y){
         waterFalls = new ArrayList<WaterFall>();
         for(int i = 0; i < waterFallLength; i++){
             WaterFall wf;
             if (i == waterFallLength - 1){
                 wf = new WaterFall(tileMap, 0, 1);
-                wf.setPosition(150,100 + (waterFallLength-2)*waterFalls.get(i-1).getHeight() + wf.getHeight());
+                wf.setPosition(x,y + (waterFallLength-2)*waterFalls.get(i-1).getHeight() + wf.getHeight());
             }
             else{
                 wf = new WaterFall(tileMap, i % 4, 0);
-                wf.setPosition(150,100 + i*wf.getHeight());
+                wf.setPosition(x,y + i*wf.getHeight());
             }
             waterFalls.add(wf);
         }
     }
 
+    private void checkGameOverState(){
+        if (player.getHealth() == 0){
+            if(!gameOver){
+                goMenu = new GameOverMenu(gsm);
+                gameOver = true;
+            }
+            //player = null;
+        }
+    }
+
     @Override
     public void update() {
+
+        // update music
+
         stop();
         // update player
         player.update();
+
+        checkGameOverState();
+
         for (int i = 0; i < coins.size(); i++){
             Coin c = coins.get(i);
             c.update();
@@ -242,12 +274,16 @@ public class Level1State extends GameState{
         for(WaterFall part:waterFalls){
             part.update();
         }
+
     }
 
     @Override
     public void draw(Graphics2D g) {
         //draw bg
         bg.draw(g);
+
+        // draw the player
+        player.draw(g);
         //draw tile map
         tileMap.draw(g);
 
@@ -255,9 +291,6 @@ public class Level1State extends GameState{
         for(int i = 0; i < coins.size(); i++){
             coins.get(i).draw(g);
         }
-
-        // draw the player
-        player.draw(g);
 
         // draw all enemies
         for(int i = 0; i < enemies.size(); i++){
@@ -279,16 +312,21 @@ public class Level1State extends GameState{
             coinPickUps.get(i).draw(g);
         }
 
-        if(isPaused){
-            menu.draw(g);
-        }
-        if (!transition.transitionHasPlayed()){
-            transition.draw(g);
-        }
-
         // draw waterFall
         for(WaterFall part: waterFalls){
             part.draw(g);
+        }
+
+        if(isPaused){
+            menu.draw(g);
+        }
+
+        if(goMenu != null){
+            goMenu.draw(g);
+        }
+
+        if (!transition.transitionHasPlayed()){
+            transition.draw(g);
         }
 
         // draw hud
@@ -297,7 +335,7 @@ public class Level1State extends GameState{
 
     @Override
     public void keyPressed(int k) {
-        if (!isPaused){
+        if (!isPaused && !gameOver){
             if (k == KeyEvent.VK_LEFT){
                 player.setLeft(true);
             }
@@ -323,7 +361,24 @@ public class Level1State extends GameState{
                 player.setFiring();
             }
         }
-        else{
+        else if(gameOver){
+            if (k == KeyEvent.VK_UP){
+                goMenu.currentChoice--;
+                if(goMenu.currentChoice == -1){
+                    goMenu.currentChoice = goMenu.options.length - 1;
+                }
+            }
+            if (k == KeyEvent.VK_DOWN){
+                goMenu.currentChoice++;
+                if(goMenu.currentChoice == goMenu.options.length){
+                    goMenu.currentChoice = 0;
+                }
+            }
+            if(k==KeyEvent.VK_ENTER){
+                goMenu.select();
+            }
+        }
+        else if(isPaused){
             if (k == KeyEvent.VK_UP){
                 menu.currentChoice--;
                 if(menu.currentChoice == -1) {
@@ -344,19 +399,21 @@ public class Level1State extends GameState{
             }
         }
         if (k==KeyEvent.VK_ESCAPE){
-            isPaused = !isPaused;
-            isStartPause = true;
-            // возобновление анимации монет
-            if(!isPaused){
-                player.animation.setDelay(400);
-                for(Coin c:coins){
-                    c.animation.setDelay(400);
-                }
-                for(Enemy e: enemies){
-                    e.animation.setDelay(300);
-                }
-                for(FireBall fb: player.getFireBalls()){
-                    fb.animation.setDelay(70);
+            if(!gameOver){
+                isPaused = !isPaused;
+                isStartPause = true;
+                // возобновление анимации монет
+                if(!isPaused){
+                    player.animation.setDelay(400);
+                    for(Coin c:coins){
+                        c.animation.setDelay(400);
+                    }
+                    for(Enemy e: enemies){
+                        e.animation.setDelay(300);
+                    }
+                    for(FireBall fb: player.getFireBalls()){
+                        fb.animation.setDelay(70);
+                    }
                 }
             }
         }

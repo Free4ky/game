@@ -1,5 +1,6 @@
 package ru.Entity.Enemies;
 
+import ru.Entity.Animation;
 import ru.Entity.Enemy;
 import ru.TileMap.TileMap;
 
@@ -15,9 +16,9 @@ public class Spike extends Enemy {
         super(tm);
         health = 100000000;
         width = 31;
-        height = 8;
-        cwidth = 20;
-        cheight = 8;
+        height = 4;
+        cwidth = 30;
+        cheight = 10;
         moveSpeed = 0;
         fallSpeed = 0.2;
         maxFallSpeed = 10.0;
@@ -30,6 +31,7 @@ public class Spike extends Enemy {
                             "/Sprites/Enemies/SpikeT.png"
                     )
             );
+            animation = new Animation();
         }
         catch (Exception e){
             e.printStackTrace();
