@@ -159,7 +159,7 @@ public class Level1State extends GameState{
                 new Point(650,150),
                 new Point(670,150),
                 new Point(690,150),
-                new Point(100,150)
+                new Point(250,150)
         };
         for(int i = 0; i < points.length - 1; i++){
             s = new Slugger(tileMap);
@@ -188,12 +188,17 @@ public class Level1State extends GameState{
     }
 
     private void checkGameOverState(){
+        if (player == null) return;
         if (player.getHealth() == 0){
             if(!gameOver){
                 goMenu = new GameOverMenu(gsm);
                 gameOver = true;
             }
-            //player = null;
+            if (player!= null && player.animation.hasPlayedOnce()){
+                tileMap.savedPlayerX = player.getX();
+                tileMap.savedPlayerY = player.getY();
+                player = null;
+            }
         }
     }
 
@@ -202,77 +207,95 @@ public class Level1State extends GameState{
 
         // update music
 
-        stop();
-        // update player
-        player.update();
-
-        checkGameOverState();
-
-        for (int i = 0; i < coins.size(); i++){
-            Coin c = coins.get(i);
-            c.update();
-            if(c.intersects(player)){
-                c.getCoinEffect().play();
-                coinPickUps.add(new CoinPickUp(c.getX(),c.getY()));
-                coins.remove(i);
-                player.coinsAmount++;
+        try{
+            stop();
+            // update player
+            if(player != null){
+                player.update();
             }
-        }
-        for(int i = 0; i < coinPickUps.size(); i++){
-            CoinPickUp cpu = coinPickUps.get(i);
-            cpu.update();
-            if(cpu.shouldRemove()){
-                coinPickUps.remove(i);
-                i--;
+
+            checkGameOverState();
+
+
+            for (int i = 0; i < coins.size(); i++){
+                Coin c = coins.get(i);
+                c.update();
+                if(player != null && c.intersects(player)){
+                    c.getCoinEffect().play();
+                    coinPickUps.add(new CoinPickUp(c.getX(),c.getY()));
+                    coins.remove(i);
+                    player.coinsAmount++;
+                }
             }
-        }
-        //if (player.getY() < tileMap.getHeight()/(GamePanel.SCALE * 2)){
-          //  tileMap.setPosition(
+            for(int i = 0; i < coinPickUps.size(); i++){
+                CoinPickUp cpu = coinPickUps.get(i);
+                cpu.update();
+                if(cpu.shouldRemove()){
+                    coinPickUps.remove(i);
+                    i--;
+                }
+            }
+            //if (player.getY() < tileMap.getHeight()/(GamePanel.SCALE * 2)){
+            //  tileMap.setPosition(
             //        GamePanel.WIDTH/2 - player.getX(),
-              //      GamePanel.HEIGHT/2-player.getY()
+            //      GamePanel.HEIGHT/2-player.getY()
             //);
-       // }
-        //else{
+            // }
+            //else{
             //tileMap.setPosition(
-                //    GamePanel.WIDTH/2 - player.getX(),
-              //      GamePanel.HEIGHT/2-player.getY() + tileMap.getTileSize()*3
+            //    GamePanel.WIDTH/2 - player.getX(),
+            //      GamePanel.HEIGHT/2-player.getY() + tileMap.getTileSize()*3
             //);
-        //}
-        tileMap.setPosition(
-                GamePanel.WIDTH/2 - player.getX(),
-                GamePanel.HEIGHT/2-player.getY() + tileMap.getTileSize()*2
-        );
+            //}
+            if(player != null){
+                tileMap.setPosition(
+                        GamePanel.WIDTH/2 - player.getX(),
+                        GamePanel.HEIGHT/2-player.getY() + tileMap.getTileSize()*2
+                );
+            }
+            else{
+                tileMap.setPosition(
+                        GamePanel.WIDTH/2 - tileMap.savedPlayerX,
+                        GamePanel.HEIGHT/2-tileMap.savedPlayerY + tileMap.getTileSize()*2
+                );
+            }
 
-        // set background
-        bg.setPosition(tileMap.getX(), 0);
+            // set background
+            bg.setPosition(tileMap.getX(), 0);
 
-        // attack enemies
-        player.checkAttack(enemies);
+            // attack enemies
+            if(player != null){
+                player.checkAttack(enemies);
+            }
 
-        //update all enemies
-        for(int i = 0; i < enemies.size(); i++){
-            Enemy e = enemies.get(i);
-            e.update();
-            if(e.isDead()){
-                explosions.add(
-                        new Explosion(e.getX(),e.getY()));
-                enemies.remove(i);
-                i--;
+            //update all enemies
+            for(int i = 0; i < enemies.size(); i++){
+                Enemy e = enemies.get(i);
+                e.update();
+                if(e.isDead()){
+                    explosions.add(
+                            new Explosion(e.getX(),e.getY()));
+                    enemies.remove(i);
+                    i--;
+                }
+            }
+            // update all explosions
+            for(int i = 0; i < explosions.size(); i++){
+                Explosion e = explosions.get(i);
+                e.update();
+                if(e.shouldRemove()){
+                    explosions.remove(i);
+                    i--;
+                }
+            }
+
+            //update WaterFall
+            for(WaterFall part:waterFalls){
+                part.update();
             }
         }
-        // update all explosions
-        for(int i = 0; i < explosions.size(); i++){
-            Explosion e = explosions.get(i);
-            e.update();
-            if(e.shouldRemove()){
-                explosions.remove(i);
-                i--;
-            }
-        }
-
-        //update WaterFall
-        for(WaterFall part:waterFalls){
-            part.update();
+        catch (Exception e){
+            e.printStackTrace();
         }
 
     }
@@ -283,7 +306,9 @@ public class Level1State extends GameState{
         bg.draw(g);
 
         // draw the player
-        player.draw(g);
+        if(player != null){
+            player.draw(g);
+        }
         //draw tile map
         tileMap.draw(g);
 
@@ -421,23 +446,25 @@ public class Level1State extends GameState{
 
     @Override
     public void keyReleased(int k) {
-        if (k == KeyEvent.VK_LEFT){
-            player.setLeft(false);
-        }
-        if (k == KeyEvent.VK_RIGHT){
-            player.setRight(false);
-        }
-        if (k == KeyEvent.VK_UP){
-            player.setUP(false);
-        }
-        if (k == KeyEvent.VK_DOWN){
-            player.setDown(false);
-        }
-        if (k == KeyEvent.VK_W){
-            player.setJumping(false);
-        }
-        if (k == KeyEvent.VK_E){
-            player.setGliding(false);
+        if(player != null){
+            if (k == KeyEvent.VK_LEFT){
+                player.setLeft(false);
+            }
+            if (k == KeyEvent.VK_RIGHT){
+                player.setRight(false);
+            }
+            if (k == KeyEvent.VK_UP){
+                player.setUP(false);
+            }
+            if (k == KeyEvent.VK_DOWN){
+                player.setDown(false);
+            }
+            if (k == KeyEvent.VK_W){
+                player.setJumping(false);
+            }
+            if (k == KeyEvent.VK_E){
+                player.setGliding(false);
+            }
         }
     }
 
@@ -445,14 +472,29 @@ public class Level1State extends GameState{
     public void mouseClicked(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-        for(Rectangle r: menu.buttons){
-            if (r.contains(x/GamePanel.SCALE,y/GamePanel.SCALE)){
-                int i = (r.y - InGameMenu.start_y)/30;
-                if (i == menu.currentChoice){
-                    menu.select(this);
+        if(isPaused){
+            for(Rectangle r: menu.buttons){
+                if (r.contains(x/GamePanel.SCALE,y/GamePanel.SCALE)){
+                    int i = (r.y - InGameMenu.start_y)/30;
+                    if (i == menu.currentChoice){
+                        menu.select(this);
+                    }
+                    else{
+                        menu.currentChoice = i;
+                    }
                 }
-                else{
-                    menu.currentChoice = i;
+            }
+        }
+        if(gameOver){
+            for(Rectangle r: goMenu.buttons){
+                if (r.contains(x/GamePanel.SCALE,y/GamePanel.SCALE)){
+                    int i = (r.y - InGameMenu.start_y)/30;
+                    if (i == goMenu.currentChoice){
+                        goMenu.select();
+                    }
+                    else{
+                        goMenu.currentChoice = i;
+                    }
                 }
             }
         }

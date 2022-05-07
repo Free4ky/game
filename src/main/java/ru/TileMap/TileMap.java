@@ -28,6 +28,9 @@ public class TileMap {
     private int xmax;
     private int ymax;
 
+    public double savedPlayerX;
+    public double savedPlayerY;
+
     private double tween;
 
     // map

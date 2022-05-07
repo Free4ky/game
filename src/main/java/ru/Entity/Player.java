@@ -360,16 +360,8 @@ public class Player extends MapObject {
                 width = 30;
             }
         }
-        else{
-            if(animation.hasPlayedOnce()){
-                animation.setFrame(sprites.get(DEATH).length - 1);
-                animBlock = true;
-            }
-        }
 
-        if(!animBlock){
-            animation.update();
-        }
+        animation.update();
 
         //set direction
         if (currentAction != SCRATCHING && currentAction != FIREBALL){
