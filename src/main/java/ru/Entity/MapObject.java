@@ -77,8 +77,11 @@ public abstract class MapObject{
     protected double jumpStart; // how high object can jump
     protected double stopJumpSpeed;
 
+    protected boolean nearTheWall;
+
     //constructor
     public MapObject(TileMap tm){
+        nearTheWall = false;
         tileMap = tm;
         tileSize = tm.getTileSize();
     }
@@ -90,6 +93,15 @@ public abstract class MapObject{
         return r1.intersects(r2); // built-in method
     }
 
+    public boolean intersectsHW(MapObject o){
+        Rectangle r1 = getRectangleHW();
+        Rectangle r2 = o.getRectangleHW();
+        return r1.intersects(r2);
+    }
+
+    public Rectangle getRectangleHW(){
+        return new Rectangle((int)x - width, (int)y-height,width,height);
+    }
     public Rectangle getRectangle(){
         return new Rectangle(
                 (int)x - cwidth, (int)y-cheight,cwidth,cheight);
@@ -167,20 +179,24 @@ public abstract class MapObject{
             if(topLeft || bottomLeft){
                 // stop moving
                 dx = 0;
+                nearTheWall = true;
                 // set the object position just right the tile it hit
                 xtemp = currCol * tileSize + cwidth/2;
             }
             else{
+                nearTheWall = false;
                 xtemp += dx;
             }
         }
         if (dx > 0){
             if (topRight || bottomRight){
                 dx = 0;
+                nearTheWall = true;
                 //set the object just left the tile it hit
                 xtemp = (currCol + 1) * tileSize - cwidth/2;
             }
             else{
+                nearTheWall = false;
                 xtemp +=dx;
             }
         }

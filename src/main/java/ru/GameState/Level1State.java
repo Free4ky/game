@@ -9,7 +9,6 @@ import ru.Audio.AudioPlayer;
 import ru.Entity.*;
 import ru.Entity.Enemies.Slugger;
 import ru.Entity.Enemies.Spike;
-import ru.Main.Game;
 import ru.Main.GamePanel;
 import ru.TileMap.Background;
 import ru.TileMap.TileMap;
@@ -17,9 +16,6 @@ import ru.TileMap.TileMap;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Level1State extends GameState{
@@ -42,6 +38,8 @@ public class Level1State extends GameState{
     private ArrayList<Explosion> explosions;
     private ArrayList<CoinPickUp> coinPickUps;
 
+    private MovableObject temp;
+
     private HUD hud;
 
     // waterFall
@@ -52,8 +50,6 @@ public class Level1State extends GameState{
         init();
         //System.out.println(this.gsm ==null);
     }
-
-
 
     public ArrayList<Coin> getCoins() {
         return coins;
@@ -133,6 +129,11 @@ public class Level1State extends GameState{
         bgMusic = new AudioPlayer("/Music/level1-1.mp3");
         bgMusic.play();
         bgMusic.loop();
+
+        // try to add movable obj
+        temp = new MovableObject(tileMap,player);
+        Point p = new Point(100,170);
+        temp.setPosition(p.x,p.y);
 
         //long x = bgMusic.getDuration("/Music/level1-1.mp3");
         //System.out.println(x);
@@ -264,7 +265,7 @@ public class Level1State extends GameState{
             bg.setPosition(tileMap.getX(), 0);
 
             // attack enemies
-            if(player != null){
+            if(player != null && !isPaused){
                 player.checkAttack(enemies);
             }
 
@@ -293,6 +294,12 @@ public class Level1State extends GameState{
             for(WaterFall part:waterFalls){
                 part.update();
             }
+            // update gameover menu
+            if (goMenu != null){
+                goMenu.update();
+            }
+
+            temp.update();
         }
         catch (Exception e){
             e.printStackTrace();
@@ -336,6 +343,8 @@ public class Level1State extends GameState{
             );
             coinPickUps.get(i).draw(g);
         }
+
+        temp.draw(g);
 
         // draw waterFall
         for(WaterFall part: waterFalls){

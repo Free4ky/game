@@ -31,6 +31,7 @@ public class Player extends MapObject {
 
     public int coinsAmount;
 
+
     // fireball
     private boolean firing;
     private int fireCost;
@@ -66,9 +67,14 @@ public class Player extends MapObject {
     // sound effects
     private HashMap<String, AudioPlayer> sfx;
 
+    public boolean intersectsStoppedObject;
+    public boolean intersectMovableObjectY;
+
 
     public Player(TileMap tm){
         super(tm);
+        intersectsStoppedObject = false;
+        intersectMovableObjectY = false;
 
         isDead = false;
         animBlock = false;
@@ -76,7 +82,7 @@ public class Player extends MapObject {
         width = 30;
         height = 30;
         cwidth = 20;
-        cheight = 27;
+        cheight = 28;
 
         moveSpeed = 0.3;
         maxSpeed = 1.6;
@@ -182,30 +188,34 @@ public class Player extends MapObject {
     private void getNextPosition() {
 
         // movement
-        if (left) {
-            dx -= moveSpeed;
-            if (dx < -maxSpeed) {
-                dx = -maxSpeed;
-            }
-        } else if (right) {
-            dx += moveSpeed;
-            if (dx > maxSpeed) {
-                dx = maxSpeed;
-            }
-        } else {
-            if (dx > 0) {
-                dx -= stopSpeed;
-                if (dx < 0) {
-                    dx = 0;
+        if(intersectsStoppedObject){
+            dx = 0;
+        }
+        else{
+            if (left) {
+                dx -= moveSpeed;
+                if (dx < -maxSpeed) {
+                    dx = -maxSpeed;
                 }
-            } else if (dx < 0) {
-                dx += stopSpeed;
+            } else if (right) {
+                dx += moveSpeed;
+                if (dx > maxSpeed) {
+                    dx = maxSpeed;
+                }
+            } else {
                 if (dx > 0) {
-                    dx = 0;
+                    dx -= stopSpeed;
+                    if (dx < 0) {
+                        dx = 0;
+                    }
+                } else if (dx < 0) {
+                    dx += stopSpeed;
+                    if (dx > 0) {
+                        dx = 0;
+                    }
                 }
             }
         }
-
         // cannot move while attacking, except in air
         if ((currentAction == SCRATCHING ||
                 currentAction == FIREBALL) &&
@@ -219,7 +229,20 @@ public class Player extends MapObject {
             falling = true;
         }
 
+        //System.out.println(jumping);
+
         // falling
+        if(intersectMovableObjectY){
+            falling = false;
+            if(!jumping){
+                dy = 0;
+            }
+            else{
+                setPosition(x, y - 1);
+                dy = jumpStart;
+                falling = true;
+            }
+        }
         if (falling) {
             //gliding
             if (dy > 0 && gliding) {
@@ -232,7 +255,7 @@ public class Player extends MapObject {
                 jumping = false;
             }
             // longer you hold the jump button higher you'll jump
-            if (dy < 0 && !jumping) {
+            if (dy <= 0 && !jumping) {
                 dy += stopJumpSpeed;
             }
             if (dy > maxFallSpeed) {
@@ -388,6 +411,7 @@ public class Player extends MapObject {
         }
 
         super.draw(g);
+
     }
 
     public void checkAttack(ArrayList<Enemy> enemies){
@@ -439,6 +463,9 @@ public class Player extends MapObject {
         flinching = true;
         flinchTimer = System.nanoTime();
     }
+
+
+
     public ArrayList<FireBall> getFireBalls() {
         return fireBalls;
     }

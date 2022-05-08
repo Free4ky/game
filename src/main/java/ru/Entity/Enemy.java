@@ -1,5 +1,6 @@
 package ru.Entity;
 
+import ru.GameState.GameStateManager;
 import ru.TileMap.TileMap;
 
 public class Enemy extends MapObject{
