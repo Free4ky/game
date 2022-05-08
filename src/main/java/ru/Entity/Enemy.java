@@ -8,11 +8,14 @@ public class Enemy extends MapObject{
     protected int health;
     protected int maxHealth;
     protected boolean dead;
+    protected boolean startDeathAnimation;
     protected int damage;
 
     protected boolean flinching;
     protected long flinchTimer;
 
+    public static final int ENEMY = 0;
+    public static final int FRIEND = 1;
 
     public Enemy(TileMap tm){
         super(tm);

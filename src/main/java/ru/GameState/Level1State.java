@@ -9,6 +9,7 @@ import ru.Audio.AudioPlayer;
 import ru.Entity.*;
 import ru.Entity.Enemies.Slugger;
 import ru.Entity.Enemies.Spike;
+import ru.Entity.Enemies.Vase;
 import ru.Main.GamePanel;
 import ru.TileMap.Background;
 import ru.TileMap.TileMap;
@@ -38,7 +39,9 @@ public class Level1State extends GameState{
     private ArrayList<Explosion> explosions;
     private ArrayList<CoinPickUp> coinPickUps;
 
-    private MovableObject temp;
+    private ArrayList<Enemy> vases;
+
+    private MovableObject stone;
 
     private HUD hud;
 
@@ -90,6 +93,7 @@ public class Level1State extends GameState{
             }
         }
     }
+
     @Override
     public void init() {
         gameOver = false;
@@ -118,6 +122,9 @@ public class Level1State extends GameState{
         // Create enemies
         populateEnemies();
 
+        // create Vases
+        createVases(5,100,170);
+
         // create WaterFall
         createWaterFall(14,450,10);
 
@@ -131,13 +138,23 @@ public class Level1State extends GameState{
         bgMusic.loop();
 
         // try to add movable obj
-        temp = new MovableObject(tileMap,player);
+        stone = new MovableObject(tileMap,player);
         Point p = new Point(100,170);
-        temp.setPosition(p.x,p.y);
+        stone.setPosition(p.x,p.y);
 
         //long x = bgMusic.getDuration("/Music/level1-1.mp3");
         //System.out.println(x);
 
+    }
+
+    private void createVases(int num, int x, int y){
+        vases = new ArrayList<Enemy>();
+        Vase v;
+        for(int i = 0; i < num; i++){
+            v = new Vase(tileMap);
+            v.setPosition(x + i*30,y);
+            vases.add(v);
+        }
     }
 
     private void createCoins(int num,int x, int y){
@@ -236,18 +253,7 @@ public class Level1State extends GameState{
                     i--;
                 }
             }
-            //if (player.getY() < tileMap.getHeight()/(GamePanel.SCALE * 2)){
-            //  tileMap.setPosition(
-            //        GamePanel.WIDTH/2 - player.getX(),
-            //      GamePanel.HEIGHT/2-player.getY()
-            //);
-            // }
-            //else{
-            //tileMap.setPosition(
-            //    GamePanel.WIDTH/2 - player.getX(),
-            //      GamePanel.HEIGHT/2-player.getY() + tileMap.getTileSize()*3
-            //);
-            //}
+
             if(player != null){
                 tileMap.setPosition(
                         GamePanel.WIDTH/2 - player.getX(),
@@ -266,7 +272,8 @@ public class Level1State extends GameState{
 
             // attack enemies
             if(player != null && !isPaused){
-                player.checkAttack(enemies);
+                player.checkAttack(enemies, Enemy.ENEMY);
+                player.checkAttack(vases, Enemy.FRIEND);
             }
 
             //update all enemies
@@ -280,6 +287,16 @@ public class Level1State extends GameState{
                     i--;
                 }
             }
+
+            for(int i = 0; i < vases.size(); i++){
+                Enemy v = vases.get(i);
+                v.update();
+                if(v.isDead() && v.animation.hasPlayedOnce()){
+                    vases.remove(i);
+                    i--;
+                }
+            }
+
             // update all explosions
             for(int i = 0; i < explosions.size(); i++){
                 Explosion e = explosions.get(i);
@@ -299,7 +316,7 @@ public class Level1State extends GameState{
                 goMenu.update();
             }
 
-            temp.update();
+            stone.update();
         }
         catch (Exception e){
             e.printStackTrace();
@@ -329,6 +346,15 @@ public class Level1State extends GameState{
             enemies.get(i).draw(g);
         }
 
+        try {
+            for(int i = 0; i < vases.size(); i++){
+                vases.get(i).draw(g);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         // draw explosions
         for(int i = 0; i < explosions.size(); i++){
             explosions.get(i).setMapPosition(
@@ -344,7 +370,7 @@ public class Level1State extends GameState{
             coinPickUps.get(i).draw(g);
         }
 
-        temp.draw(g);
+        stone.draw(g);
 
         // draw waterFall
         for(WaterFall part: waterFalls){

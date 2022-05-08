@@ -414,7 +414,7 @@ public class Player extends MapObject {
 
     }
 
-    public void checkAttack(ArrayList<Enemy> enemies){
+    public void checkAttack(ArrayList<Enemy> enemies, int type){
 
         for(int i = 0; i < enemies.size(); i++){
             Enemy e = enemies.get(i);
@@ -452,11 +452,12 @@ public class Player extends MapObject {
             }
             // check enemy collision
             if(intersects(e)){
-                hit(e.getDamage());
+                hit(e.getDamage(), type);
             }
         }
     }
-    public void hit(int damage){
+    public void hit(int damage, int type){
+        if(type == Enemy.FRIEND) return;
         if(flinching) return;
         health -= damage;
         if(health < 0) health = 0;
