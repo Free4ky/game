@@ -37,9 +37,11 @@ public class Level1State extends GameState{
 
     private ArrayList<Enemy> enemies;
     private ArrayList<Explosion> explosions;
-    private ArrayList<CoinPickUp> coinPickUps;
+    private ArrayList<PickUp> coinPickUps;
 
     private ArrayList<Enemy> vases;
+    private ArrayList<Supplies> supplies;
+    private  ArrayList<PickUp> heartPickUps;
 
     private MovableObject stone;
 
@@ -125,6 +127,10 @@ public class Level1State extends GameState{
         // create Vases
         createVases(5,100,170);
 
+        // init supplies
+        supplies = new ArrayList<Supplies>();
+        heartPickUps = new ArrayList<PickUp>();
+
         // create WaterFall
         createWaterFall(14,450,10);
 
@@ -158,7 +164,7 @@ public class Level1State extends GameState{
     }
 
     private void createCoins(int num,int x, int y){
-        coinPickUps = new ArrayList<CoinPickUp>();
+        coinPickUps = new ArrayList<PickUp>();
         numCoins = num;
         Coin.NumCoinsOnLevel[GameStateManager.LEVEL1STATE] = numCoins;
         coins = new ArrayList<Coin>();
@@ -240,13 +246,13 @@ public class Level1State extends GameState{
                 c.update();
                 if(player != null && c.intersects(player)){
                     c.getCoinEffect().play();
-                    coinPickUps.add(new CoinPickUp(c.getX(),c.getY()));
+                    coinPickUps.add(new PickUp(c.getX(),c.getY(),PickUp.COIN));
                     coins.remove(i);
                     player.coinsAmount++;
                 }
             }
             for(int i = 0; i < coinPickUps.size(); i++){
-                CoinPickUp cpu = coinPickUps.get(i);
+                PickUp cpu = coinPickUps.get(i);
                 cpu.update();
                 if(cpu.shouldRemove()){
                     coinPickUps.remove(i);
@@ -288,11 +294,39 @@ public class Level1State extends GameState{
                 }
             }
 
+            // update all vases
             for(int i = 0; i < vases.size(); i++){
                 Enemy v = vases.get(i);
                 v.update();
                 if(v.isDead() && v.animation.hasPlayedOnce()){
+                    double rand = Math.random(); // случайное число от 0 до 1
+                    if (rand < 0.99){
+                        Supplies s = new Supplies(tileMap,Supplies.HEART);
+                        s.setPosition(v.getX(), v.getY());
+                        supplies.add(s);
+                    }
                     vases.remove(i);
+                    i--;
+                }
+            }
+
+            for(int i = 0; i < supplies.size(); i++){
+                Supplies s = supplies.get(i);
+                s.update();
+                if(player.intersects(s)){
+                    player.increaseHealth(1);
+                    heartPickUps.add(new PickUp(s.getX(),s.getY(),PickUp.HEART));
+                    supplies.remove(i);
+                    i--;
+                }
+            }
+
+            // update all heartPickUps
+            for(int i = 0; i < heartPickUps.size(); i++){
+                PickUp hpu = heartPickUps.get(i);
+                hpu.update();
+                if(hpu.shouldRemove()){
+                    heartPickUps.remove(i);
                     i--;
                 }
             }
@@ -346,6 +380,7 @@ public class Level1State extends GameState{
             enemies.get(i).draw(g);
         }
 
+        // draw vases
         try {
             for(int i = 0; i < vases.size(); i++){
                 vases.get(i).draw(g);
@@ -353,6 +388,12 @@ public class Level1State extends GameState{
         }
         catch (Exception e){
             e.printStackTrace();
+        }
+
+        // draw supplies
+        for(int i = 0; i < supplies.size(); i++){
+            Supplies s = supplies.get(i);
+            s.draw(g);
         }
 
         // draw explosions
@@ -368,6 +409,13 @@ public class Level1State extends GameState{
                     (int)tileMap.getX(), (int)tileMap.getY()
             );
             coinPickUps.get(i).draw(g);
+        }
+
+        for(int i = 0; i < heartPickUps.size(); i++){
+            heartPickUps.get(i).setMapPosition(
+                    (int)tileMap.getX(), (int)tileMap.getY()
+            );
+            heartPickUps.get(i).draw(g);
         }
 
         stone.draw(g);

@@ -50,7 +50,7 @@ public class MovableObject extends MapObject{
                 }
             }
         }
-        else if (intersectsHW(player)){
+        else if (intersects(player)){
             if(player.facingRight){
                 if(player.getX() + width/2 > x){
                     player.intersectMovableObjectY = true;

@@ -465,7 +465,12 @@ public class Player extends MapObject {
         flinchTimer = System.nanoTime();
     }
 
-
+    public void increaseHealth(int hp){
+        health += hp;
+        if(health + hp > maxHealth){
+           health = maxHealth;
+       }
+    }
 
     public ArrayList<FireBall> getFireBalls() {
         return fireBalls;
