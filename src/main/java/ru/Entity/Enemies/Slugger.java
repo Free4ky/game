@@ -1,5 +1,6 @@
 package ru.Entity.Enemies;
 
+import ru.Audio.AudioPlayer;
 import ru.Entity.Animation;
 import ru.Entity.Enemy;
 import ru.TileMap.TileMap;
@@ -30,6 +31,7 @@ public class Slugger extends Enemy {
 
         // load tileSheet
         try {
+            deathEffect = new AudioPlayer("/SFX/deathSound.mp3");
             BufferedImage spriteSheet = ImageIO.read(
                     getClass().getResourceAsStream(
                             "/Sprites/Enemies/slugger.gif")
@@ -80,6 +82,9 @@ public class Slugger extends Enemy {
 
     public void update(){
         // update position
+        if(dead){
+            deathEffect.play();
+        }
         getNextPosition();
         checkTileMapCollision();
         setPosition(xtemp,ytemp);

@@ -1,5 +1,6 @@
 package ru.Entity;
 
+import ru.Audio.AudioPlayer;
 import ru.GameState.GameStateManager;
 import ru.TileMap.TileMap;
 
@@ -17,8 +18,14 @@ public class Enemy extends MapObject{
     public static final int ENEMY = 0;
     public static final int FRIEND = 1;
 
+    protected AudioPlayer deathEffect;
+
     public Enemy(TileMap tm){
         super(tm);
+    }
+
+    public AudioPlayer getDeathEffect() {
+        return deathEffect;
     }
 
     public boolean isDead() {return dead;}
@@ -28,7 +35,11 @@ public class Enemy extends MapObject{
         if (dead || flinching) return;
         health -= damage;
         if(health < 0) health = 0;
-        if(health == 0) dead = true;
+        if(health == 0){
+            dead = true;
+            //здесь быстрее проигрывается звук
+            deathEffect.play();
+        }
         flinching = true;
         flinchTimer = System.nanoTime();
 

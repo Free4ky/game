@@ -229,7 +229,6 @@ public class Level1State extends GameState{
     @Override
     public void update() {
 
-        // update music
 
         try{
             stop();
@@ -326,6 +325,7 @@ public class Level1State extends GameState{
                 PickUp hpu = heartPickUps.get(i);
                 hpu.update();
                 if(hpu.shouldRemove()){
+                    hpu.getSound().play();
                     heartPickUps.remove(i);
                     i--;
                 }

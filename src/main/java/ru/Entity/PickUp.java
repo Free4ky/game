@@ -1,5 +1,7 @@
 package ru.Entity;
 
+import ru.Audio.AudioPlayer;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
@@ -7,6 +9,7 @@ public class PickUp extends MapEffect{
 
     public static final int COIN = 0;
     public static final int HEART = 1;
+
 
     public PickUp(int x, int y, int type){
         super(x,y);
@@ -29,6 +32,7 @@ public class PickUp extends MapEffect{
                     }
                     break;
                 case HEART:
+                    sfx = new AudioPlayer("/SFX/heartPickUpSound2.wav");
                     spriteSheet = ImageIO.read(
                             getClass().getResourceAsStream("/Sprites/Items/Heart/HeartPickUpT.png"));
                     sprites = new BufferedImage[4];
@@ -49,5 +53,8 @@ public class PickUp extends MapEffect{
         catch (Exception e){
             e.printStackTrace();
         }
+    }
+    public AudioPlayer getSound(){
+        return sfx;
     }
 }

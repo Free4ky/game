@@ -1,5 +1,6 @@
 package ru.Entity.Enemies;
 
+import ru.Audio.AudioPlayer;
 import ru.Entity.Animation;
 import ru.Entity.Enemy;
 import ru.TileMap.TileMap;
@@ -31,6 +32,9 @@ public class Vase extends Enemy {
         startDeathAnimation = false;
 
         try {
+
+            deathEffect = new AudioPlayer("/SFX/BreakEffect.mp3");
+
             idle = new BufferedImage[1];
             idle[0] = ImageIO.read(
                     getClass().getResourceAsStream("/Sprites/Enemies/Vase/vase.png"));

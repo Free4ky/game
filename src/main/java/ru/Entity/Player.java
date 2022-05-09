@@ -70,6 +70,8 @@ public class Player extends MapObject {
     public boolean intersectsStoppedObject;
     public boolean intersectMovableObjectY;
 
+    private AudioPlayer deathSound;
+
 
     public Player(TileMap tm){
         super(tm);
@@ -108,6 +110,9 @@ public class Player extends MapObject {
 
         //load sprites
         try{
+
+            deathSound = new AudioPlayer("/SFX/PlayerDeathSound.mp3");
+
             BufferedImage spriteSheet = ImageIO.read(
                     getClass().getResourceAsStream(
                             "/Sprites/Player/playersprites.gif"));
@@ -264,7 +269,12 @@ public class Player extends MapObject {
         }
     }
 
+    public AudioPlayer getDeathSound() {
+        return deathSound;
+    }
+
     public void update(){
+
 
         // update position
         getNextPosition();
@@ -367,6 +377,7 @@ public class Player extends MapObject {
             }
         }
         else if(health == 0 && !isDead){
+
             if (currentAction != DEATH){
                 currentAction = DEATH;
                 flinching = false;
@@ -394,6 +405,7 @@ public class Player extends MapObject {
     }
 
     public void draw(Graphics2D g){
+
         setMapPosition();
         // draw fireBalls
         for(FireBall fb:fireBalls){
@@ -461,6 +473,11 @@ public class Player extends MapObject {
         if(flinching) return;
         health -= damage;
         if(health < 0) health = 0;
+        // здесь быстрее проигрывается звук
+        if(!dead && health == 0){
+            dead = true;
+            deathSound.play();
+        }
         flinching = true;
         flinchTimer = System.nanoTime();
     }

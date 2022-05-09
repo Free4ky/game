@@ -1,5 +1,7 @@
 package ru.Entity;
 
+import ru.Audio.AudioPlayer;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -18,6 +20,8 @@ public abstract class MapEffect {
     protected BufferedImage[] sprites;
 
     protected boolean remove;
+
+    protected AudioPlayer sfx;
 
     public MapEffect(int x, int y){
         this.x = x;
