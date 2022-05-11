@@ -70,8 +70,6 @@ public class Player extends MapObject {
     public boolean intersectsStoppedObject;
     public boolean intersectMovableObjectY;
 
-    private AudioPlayer deathSound;
-
 
     public Player(TileMap tm){
         super(tm);
@@ -110,8 +108,6 @@ public class Player extends MapObject {
 
         //load sprites
         try{
-
-            deathSound = new AudioPlayer("/SFX/PlayerDeathSound.mp3");
 
             BufferedImage spriteSheet = ImageIO.read(
                     getClass().getResourceAsStream(
@@ -156,6 +152,13 @@ public class Player extends MapObject {
                 );
             }
             sprites.add(deathSprite);
+
+            sfx = new HashMap<String, AudioPlayer>();
+            sfx.put("jump", new AudioPlayer("/SFX/jump.mp3"));
+            sfx.put("scratch", new AudioPlayer("/SFX/scratch.mp3"));
+            sfx.put("fireBall",new AudioPlayer("/SFX/fireBall.mp3"));
+            sfx.put("death", new AudioPlayer("/SFX/PlayerDeathSound.mp3"));
+            sfx.put("hit", new AudioPlayer("/SFX/PlayerHitSound.mp3"));
         }
         catch (Exception e){
             e.printStackTrace();
@@ -166,10 +169,7 @@ public class Player extends MapObject {
         animation.setFrames(sprites.get(IDLE));
         animation.setDelay(400);
 
-        sfx = new HashMap<String, AudioPlayer>();
-        sfx.put("jump", new AudioPlayer("/SFX/jump.mp3"));
-        sfx.put("scratch", new AudioPlayer("/SFX/scratch.mp3"));
-        sfx.put("fireBall",new AudioPlayer("/SFX/fireBall.mp3"));
+
     }
 
     public int getHealth(){return this.health;}
@@ -269,12 +269,7 @@ public class Player extends MapObject {
         }
     }
 
-    public AudioPlayer getDeathSound() {
-        return deathSound;
-    }
-
     public void update(){
-
 
         // update position
         getNextPosition();
@@ -326,7 +321,7 @@ public class Player extends MapObject {
         }
 
         // set animations
-        if(scratching){
+        if(scratching && !isDead){
             if(currentAction != SCRATCHING){
                 sfx.get("scratch").play();
                 currentAction = SCRATCHING;
@@ -335,7 +330,7 @@ public class Player extends MapObject {
                 width = 60;
             }
         }
-        else if(firing){
+        else if(firing && !isDead){
             if(currentAction != FIREBALL){
                 currentAction = FIREBALL;
                 animation.setFrames(sprites.get(FIREBALL));
@@ -368,7 +363,7 @@ public class Player extends MapObject {
                 width = 30;
             }
         }
-        else if (left || right){
+        else if ((left || right) && !isDead){
             if(currentAction != WALKING){
                 currentAction = WALKING;
                 animation.setFrames(sprites.get(WALKING));
@@ -376,16 +371,7 @@ public class Player extends MapObject {
                 width = 30;
             }
         }
-        else if(health == 0 && !isDead){
 
-            if (currentAction != DEATH){
-                currentAction = DEATH;
-                flinching = false;
-                animation.setFrames(sprites.get(DEATH));
-                animation.setDelay(170);
-                isDead = true;
-            }
-        }
         else if(!isDead) {
             if(currentAction != IDLE){
                 currentAction = IDLE;
@@ -471,12 +457,24 @@ public class Player extends MapObject {
     public void hit(int damage, int type){
         if(type == Enemy.FRIEND) return;
         if(flinching) return;
+        if(health > 0){
+            sfx.get("hit").play();
+        }
         health -= damage;
         if(health < 0) health = 0;
         // здесь быстрее проигрывается звук
         if(!dead && health == 0){
+            if (currentAction != DEATH){
+                currentAction = DEATH;
+                flinching = false;
+                animation.setFrames(sprites.get(DEATH));
+                animation.setDelay(170);
+                isDead = true;
+                right = false;
+                left = false;
+            }
             dead = true;
-            deathSound.play();
+            sfx.get("death").play();
         }
         flinching = true;
         flinchTimer = System.nanoTime();

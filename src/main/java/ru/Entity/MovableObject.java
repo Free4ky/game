@@ -82,8 +82,11 @@ public class MovableObject extends MapObject{
 
     @Override
     public void draw(Graphics2D g) {
+        if (notOnScreen()){
+            setMapPosition();
+            return;
+        }
         setMapPosition();
-        g.setColor(Color.white);
         g.drawImage(
                 sprite,
                 (int)(x+xmap-width/2),

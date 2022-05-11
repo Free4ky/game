@@ -18,8 +18,8 @@ public class Transition {
         init();
     }
     public void init(){
-        this.width = GamePanel.WIDTH * GamePanel.SCALE;
-        this.height = GamePanel.HEIGHT * GamePanel.SCALE;
+        this.width = GamePanel.WIDTH * GamePanel.XSCALE;
+        this.height = GamePanel.HEIGHT * GamePanel.YSCALE;
         delay = 15;
 
     }

@@ -68,6 +68,10 @@ public class Coin extends MapObject{
         this.setPosition(this.x,y);
     }
     public void draw(Graphics2D g){
+        if (notOnScreen()){
+            setMapPosition();
+            return;
+        }
         setMapPosition();
         g.drawImage(
                 animation.getImage(),

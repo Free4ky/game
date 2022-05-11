@@ -38,6 +38,10 @@ public class Spike extends Enemy {
         }
     }
     public void draw(Graphics2D g) {
+        if (notOnScreen()){
+            setMapPosition();
+            return;
+        }
         setMapPosition();
         g.drawImage(
                 sprite,

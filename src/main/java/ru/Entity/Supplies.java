@@ -52,6 +52,10 @@ public class Supplies extends MapObject{
 
     public void draw(Graphics2D g){
 
+        if (notOnScreen()){
+            setMapPosition();
+            return;
+        }
         setMapPosition();
         g.drawImage(
                 animation.getImage(),

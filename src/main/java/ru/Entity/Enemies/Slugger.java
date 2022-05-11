@@ -115,8 +115,10 @@ public class Slugger extends Enemy {
 
     public void draw(Graphics2D g){
         // if objects not on screen it is no point to draw them
-        //if (notOnScreen()) return;
-
+        if (notOnScreen()){
+            setMapPosition();
+            return;
+        }
         setMapPosition();
 
         // draw depends on object's movement direction

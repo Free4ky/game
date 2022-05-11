@@ -557,7 +557,7 @@ public class Level1State extends GameState{
         int y = e.getY();
         if(isPaused){
             for(Rectangle r: menu.buttons){
-                if (r.contains(x/GamePanel.SCALE,y/GamePanel.SCALE)){
+                if (r.contains(x/GamePanel.XSCALE,y/GamePanel.YSCALE)){
                     int i = (r.y - InGameMenu.start_y)/30;
                     if (i == menu.currentChoice){
                         menu.select(this);
@@ -570,7 +570,7 @@ public class Level1State extends GameState{
         }
         if(gameOver){
             for(Rectangle r: goMenu.buttons){
-                if (r.contains(x/GamePanel.SCALE,y/GamePanel.SCALE)){
+                if (r.contains(x/GamePanel.XSCALE,y/GamePanel.YSCALE)){
                     int i = (r.y - InGameMenu.start_y)/30;
                     if (i == goMenu.currentChoice){
                         goMenu.select();

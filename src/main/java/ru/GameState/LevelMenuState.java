@@ -138,14 +138,24 @@ public class LevelMenuState extends GameState{
                 g.fillRect(GamePanel.WIDTH - 50,GamePanel.HEIGHT - 30,40,20);
                 g.setColor(Color.BLACK);
                 g.drawRect(back_button.x,back_button.y,back_button.width,back_button.height);
-                g.setColor(fontColor);
+                if(currentChoice == NUM_LEVELS){
+                    g.setColor(Color.BLACK);
+                }
+                else{
+                    g.setColor(fontColor);
+                }
                 g.drawString(levels[i],GamePanel.WIDTH - 47,GamePanel.HEIGHT - 16);
             }
             else{
                 g.fillOval(buttons.get(i).getX() - rad/2,buttons.get(i).getY() - rad/2, rad,rad); // центровка кружеов по центру экрана
                 g.setColor(Color.yellow);
                 g.fillOval(buttons.get(i).getX() + 1 - rad/2,buttons.get(i).getY() + 1 - rad/2, rad-2,rad-2);
-                g.setColor(fontColor);
+                if(currentChoice == i){
+                    g.setColor(Color.BLACK);
+                }
+                else{
+                    g.setColor(fontColor);
+                }
                 // Отрисовка замочков
                 if (levels[i] == "X"){
                     g.drawImage(lock,
@@ -209,7 +219,7 @@ public class LevelMenuState extends GameState{
         int ey = e.getY();
         for(Coords c: buttons){
             //делим на scale, чтобы получить достоверные координаты
-            if(rad/2 > c.distance(ex/GamePanel.SCALE,ey/GamePanel.SCALE)){
+            if(rad/2 > c.distance(ex/GamePanel.XSCALE,ey/GamePanel.YSCALE)){
                 int row = (c.getY() - y) / btw;
                 int col = numInRow - 1 + (c.getX() - GamePanel.WIDTH/2- (numInRow/2*btw))/btw;
                 //System.out.println(row + " " + col);
@@ -222,7 +232,7 @@ public class LevelMenuState extends GameState{
                 }
             }
         }
-        if (back_button.contains(ex/GamePanel.SCALE,ey/GamePanel.SCALE)){
+        if (back_button.contains(ex/GamePanel.XSCALE,ey/GamePanel.YSCALE)){
             if (currentChoice == NUM_LEVELS){
                 select();
             }

@@ -13,13 +13,15 @@ import javax.swing.JPanel;
 
 import ru.GameState.GameStateManager;
 
-public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener{
-	
+public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener {
+
 	// Размерности
-	public static final int WIDTH = 320;
-	public static final int HEIGHT = 240;
-	public static final int SCALE = 4;
-	
+	public static int WIDTH = 320;
+	public static int HEIGHT = 240;
+
+	public static int XSCALE;
+	public static int YSCALE;
+
 	// Игровой поток (thread)
 	// нужен для регулировния скорости игры
 	// Скорость зависит от производительности компьютера, если её не регулировать, будет слишком быстро
@@ -27,26 +29,32 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	private boolean running;
 	private int FPS = 70;
 	private long targetTime = 1000 / FPS;
-	
+
 	// image
 	private BufferedImage image;
 	private Graphics2D g;
-	
+
 	// Класс управления состояниями игры
 	private GameStateManager gsm;
-	
+
 	public GamePanel() {
 		super();
+		//adjustDim();
+	}
 
-		setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
+	public void setDim(int w, int h) {
+		XSCALE = w / WIDTH;
+		YSCALE = h / HEIGHT;
+		setPreferredSize(new Dimension(WIDTH * XSCALE, HEIGHT * YSCALE));
 		setFocusable(true); // позволяет фокусироваться на объекте GamePanel. Необходимо для обработки пользовательского ввода
 		requestFocus(); // получает фокус
+		System.out.println(XSCALE + " " + YSCALE);
 	}
 
 	// addNotify - Делает этот компонент JPanel отображаемым, подключая его к собственному экранному ресурсу.
 	public void addNotify() {
 		super.addNotify();
-		if(thread == null) {
+		if (thread == null) {
 			thread = new Thread(this); // Создание потока с передачей в него экземпляра GamePanel
 			addMouseListener(this);
 			addKeyListener(this); // Добавляем ввод с клавиатуры
@@ -67,37 +75,36 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	// Запуск задачи потока
 	public void run() {
-		
+
 		init();
-		
+
 		long start;
 		long elapsed;
 		long wait;
-		
+
 		// game loop
-		while(running) {
-			
+		while (running) {
+
 			start = System.nanoTime();
-			
+
 			update();
 			draw();
 			drawToScreen();
-			
+
 			elapsed = System.nanoTime() - start;
 
 			// переменная wait отвечает за то время, которое нужно подождать потоку
 			// прежде чем запускать задачу потока снова
 			// Это позволяет регулировать скорость игры
 			wait = targetTime - elapsed / 1000000;
-			if(wait < 0) wait = 5;
+			if (wait < 0) wait = 5;
 			try {
 				Thread.sleep(wait);
-			}
-			catch(Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace(); // e.pritStackTrace() выводит стек ошибок. Удобно для отладки проекта
 			}
 		}
-		
+
 	}
 
 	// Метод обновления компонентов игры
@@ -118,28 +125,50 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// Это позволяет снизить блики, мерцания и нечеткости итоговой картинки
 	private void drawToScreen() {
 		Graphics g2 = getGraphics();
-		g2.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
+		//g2.drawImage(image, 0, 0, (int)(WIDTH * XSCALE/(RATIO - 0.04)), (int)(HEIGHT * YSCALE/(RATIO + 0.05)), null);
+		g2.drawImage(image, 0, 0, WIDTH * XSCALE, HEIGHT * YSCALE, null);
+
 		g2.dispose();
 	}
 
 	// Методы обработки пользовательского ввода с клавиатуры
-	public void keyTyped(KeyEvent key) {}
+	public void keyTyped(KeyEvent key) {
+	}
+
 	public void keyPressed(KeyEvent key) {
 
 		gsm.keyPressed(key.getKeyCode());
 	}
+
 	public void keyReleased(KeyEvent key) {
 
 		gsm.keyReleased(key.getKeyCode());
 	}
 
-	public void mouseClicked(MouseEvent e){
+	public void mouseClicked(MouseEvent e) {
 		gsm.mouseClicked(e);
 	}
-	public void mouseEntered(MouseEvent e){}
-	public void mouseExited(MouseEvent e){}
-	public void mousePressed(MouseEvent e){}
-	public void mouseReleased(MouseEvent e){}
+
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	public void mouseExited(MouseEvent e) {
+	}
+
+	public void mousePressed(MouseEvent e) {
+	}
+
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	public static int[] getDim() {
+		int[] dim = new int[2];
+
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		dim[0] = gd.getDisplayMode().getWidth();
+		dim[1] = gd.getDisplayMode().getHeight();
+		return dim;
+	}
 }
 
 

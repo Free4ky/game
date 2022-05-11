@@ -85,7 +85,7 @@ public class MenuState extends GameState {
 		g.setFont(titleFont);
 
 		int length = stringLength("Dragon Survival",g);
-		g.drawString("Dragon Survival", GamePanel.WIDTH/2 - length/2, 50);
+		g.drawString("Dragon Survival", GamePanel.WIDTH/2  - length/2, 50);
 
 		// draw menu options
 		g.setFont(font);
@@ -167,8 +167,12 @@ public class MenuState extends GameState {
 	public void mouseClicked(MouseEvent e){
 		int x = e.getX();
 		int y = e.getY();
+		//System.out.println(x + " " + y);
+		//System.out.println(GamePanel.XSCALER + " " + GamePanel.YSCALER);
+		//System.out.println(x/GamePanel.XSCALER + " " + y/GamePanel.YSCALER);
+		//System.out.println(buttons.get(0).x);
 		for(Rectangle r: buttons){
-			if (r.contains(x/GamePanel.SCALE,y/GamePanel.SCALE)){
+			if (r.contains(x/GamePanel.XSCALE,y/GamePanel.YSCALE)){
 				int i = (r.y - start_y)/20;
 				if (i == currentChoice){
 					select();
@@ -180,13 +184,3 @@ public class MenuState extends GameState {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
