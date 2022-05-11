@@ -10,6 +10,14 @@ import java.util.Map;
 public class AudioPlayer {
 
     private Clip clip;
+    private FloatControl control;
+    public float previousVolume = 0;
+    public float currentVolume = 0;
+
+    public static final float MAX_VOLUME = 6.0f;
+    public static final float MIN_VOLUME = -80.0f;
+
+    public boolean mute = false;
 
     public AudioPlayer(String s){
 
@@ -39,11 +47,47 @@ public class AudioPlayer {
                     );
             clip = AudioSystem.getClip();
             clip.open(dais);
+
+            control = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
         }
         catch (Exception e){
             e.printStackTrace();
         }
 
+    }
+
+    public void setVolume(float volume){
+        currentVolume = volume;
+        control.setValue(currentVolume);
+    }
+    public void volumeUp(){
+        currentVolume += 1.0f;
+        if (currentVolume > MAX_VOLUME){
+            currentVolume = MAX_VOLUME;
+        }
+        control.setValue(currentVolume);
+    }
+
+    public void volumeDown(){
+        currentVolume -= 1.0f;
+        if(currentVolume < MIN_VOLUME){
+            currentVolume = MIN_VOLUME;
+        }
+        control.setValue(currentVolume);
+    }
+
+    public void muteVolume(){
+        if(!mute){
+            previousVolume = currentVolume;
+            currentVolume = MIN_VOLUME;
+            control.setValue(currentVolume);
+            mute = true;
+        }
+        else{
+            currentVolume = previousVolume;
+            control.setValue(currentVolume);
+            mute = false;
+        }
     }
 
     public void loop(){

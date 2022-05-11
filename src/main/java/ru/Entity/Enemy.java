@@ -18,7 +18,7 @@ public class Enemy extends MapObject{
     public static final int ENEMY = 0;
     public static final int FRIEND = 1;
 
-    protected AudioPlayer deathEffect;
+    public AudioPlayer deathEffect;
 
     public Enemy(TileMap tm){
         super(tm);

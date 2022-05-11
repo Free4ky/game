@@ -1,6 +1,7 @@
 package ru.Entity;
 
 
+import ru.Audio.AudioPlayer;
 import ru.TileMap.TileMap;
 
 import javax.imageio.ImageIO;
@@ -12,6 +13,7 @@ public class Supplies extends MapObject{
     public static final int HEART = 0;
 
     private BufferedImage [] sprites;
+
 
     public Supplies(TileMap tm, int type){
 

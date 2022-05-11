@@ -32,7 +32,7 @@ public class PickUp extends MapEffect{
                     }
                     break;
                 case HEART:
-                    sfx = new AudioPlayer("/SFX/heartPickUpSound2.wav");
+                    sfx = new AudioPlayer("/SFX/heartPickUpSound3.mp3");
                     spriteSheet = ImageIO.read(
                             getClass().getResourceAsStream("/Sprites/Items/Heart/HeartPickUpT.png"));
                     sprites = new BufferedImage[4];
@@ -54,6 +54,7 @@ public class PickUp extends MapEffect{
             e.printStackTrace();
         }
     }
+
     public AudioPlayer getSound(){
         return sfx;
     }

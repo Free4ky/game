@@ -18,6 +18,7 @@ public class HUD {
 
     private int maxWidth;
 
+
     public HUD(Player p){
 
         maxWidth = 68;
@@ -27,7 +28,7 @@ public class HUD {
             healthBar = ImageIO.read(getClass().getResourceAsStream("/HUD/HealthBarT.png"));
             fireBar = ImageIO.read(getClass().getResourceAsStream("/HUD/FlameBarT.png"));
             coinBar = ImageIO.read(getClass().getResourceAsStream("/HUD/CoinBarT.png"));
-            font = new Font("Arial",Font.PLAIN, 14);
+            font = new Font("Arial",Font.PLAIN, 12);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -65,10 +66,8 @@ public class HUD {
         g.drawImage(coinBar, 0,50, null);
 
 
-
-
-
         g.setColor(Color.WHITE);
+        g.setFont(font);
         g.drawString(
                 player.getHealth() + "/" + player.getMaxHealth(),
                 30,

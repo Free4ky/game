@@ -31,7 +31,6 @@ public class Level1State extends GameState{
     private GameOverMenu goMenu;
     private boolean gameOver;
     private Transition transition;
-    private boolean enteredState;
     private ArrayList<Coin> coins;
     private int numCoins;
 
@@ -41,7 +40,7 @@ public class Level1State extends GameState{
 
     private ArrayList<Enemy> vases;
     private ArrayList<Supplies> supplies;
-    private  ArrayList<PickUp> heartPickUps;
+    private ArrayList<PickUp> heartPickUps;
 
     private MovableObject stone;
 
@@ -116,7 +115,6 @@ public class Level1State extends GameState{
 
         menu = new InGameMenu(gsm);
         transition = new Transition();
-        enteredState = true;
 
         // create coins
         createCoins(5,600,160);
@@ -142,6 +140,8 @@ public class Level1State extends GameState{
         bgMusic = new AudioPlayer("/Music/level1-1.mp3");
         bgMusic.play();
         bgMusic.loop();
+
+        menu.setBgMusic(bgMusic);
 
         // try to add movable obj
         stone = new MovableObject(tileMap,player);
@@ -314,7 +314,9 @@ public class Level1State extends GameState{
                 s.update();
                 if(player.intersects(s)){
                     player.increaseHealth(1);
-                    heartPickUps.add(new PickUp(s.getX(),s.getY(),PickUp.HEART));
+                    PickUp pi = new PickUp(s.getX(),s.getY(),PickUp.HEART);
+                    pi.sfx.setVolume(bgMusic.currentVolume);
+                    heartPickUps.add(pi);
                     supplies.remove(i);
                     i--;
                 }
@@ -351,6 +353,8 @@ public class Level1State extends GameState{
             }
 
             stone.update();
+
+            menu.update();
         }
         catch (Exception e){
             e.printStackTrace();
@@ -503,6 +507,42 @@ public class Level1State extends GameState{
                 menu.select(this);
                 if(menu.currentChoice != 0){
                     bgMusic.stop();
+                }
+            }
+            if(k == KeyEvent.VK_LEFT){
+                bgMusic.volumeDown();
+                for(Enemy e: enemies){
+                    e.deathEffect.volumeDown();
+                }
+                for(Enemy v:vases){
+                    v.deathEffect.volumeDown();
+                }
+                for(AudioPlayer value:player.sfx.values()){
+                    value.volumeDown();
+                }
+                for(Coin c: coins){
+                    c.getCoinEffect().volumeDown();
+                }
+                for(PickUp hpu:heartPickUps){
+                    hpu.sfx.volumeDown();
+                }
+            }
+            if(k == KeyEvent.VK_RIGHT){
+                bgMusic.volumeUp();
+                for(Enemy e: enemies){
+                    e.deathEffect.volumeUp();
+                }
+                for(Enemy v:vases){
+                    v.deathEffect.volumeUp();
+                }
+                for(AudioPlayer value:player.sfx.values()){
+                    value.volumeUp();
+                }
+                for(Coin c: coins){
+                    c.getCoinEffect().volumeUp();
+                }
+                for(PickUp hpu:heartPickUps){
+                    hpu.sfx.volumeUp();
                 }
             }
         }

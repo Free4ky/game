@@ -21,7 +21,7 @@ public abstract class MapEffect {
 
     protected boolean remove;
 
-    protected AudioPlayer sfx;
+    public AudioPlayer sfx;
 
     public MapEffect(int x, int y){
         this.x = x;

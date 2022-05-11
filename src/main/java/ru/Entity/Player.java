@@ -65,7 +65,7 @@ public class Player extends MapObject {
     private static final int DEATH = 7;
 
     // sound effects
-    private HashMap<String, AudioPlayer> sfx;
+    public HashMap<String, AudioPlayer> sfx;
 
     public boolean intersectsStoppedObject;
     public boolean intersectMovableObjectY;

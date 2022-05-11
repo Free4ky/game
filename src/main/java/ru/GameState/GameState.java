@@ -41,5 +41,7 @@ public abstract class GameState {
 		return dimg;
 	}
 
-
+	public AudioPlayer getBgMusic() {
+		return bgMusic;
+	}
 }

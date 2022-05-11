@@ -1,5 +1,6 @@
 package ru.Entity.Enemies;
 
+import ru.Audio.AudioPlayer;
 import ru.Entity.Animation;
 import ru.Entity.Enemy;
 import ru.TileMap.TileMap;
@@ -26,6 +27,7 @@ public class Spike extends Enemy {
         damage = 1;
 
         try{
+            deathEffect = new AudioPlayer("/SFX/deathSound.mp3");
             sprite = ImageIO.read(
                     getClass().getResourceAsStream(
                             "/Sprites/Enemies/SpikeT.png"
