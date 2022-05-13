@@ -19,8 +19,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public static int WIDTH = 320;
 	public static int HEIGHT = 240;
 
-	public static int XSCALE;
-	public static int YSCALE;
+	public static int WIDTH_FULL = WIDTH;
+	public static int HEIGHT_FULL = HEIGHT;
+
+	public static int XSCALE = 4;
+	public static int YSCALE = 4;
+
+	public static double XSCALE2 = XSCALE;
+	public static double YSCALE2 = YSCALE;
 
 	// Игровой поток (thread)
 	// нужен для регулировния скорости игры
@@ -39,7 +45,23 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	public GamePanel() {
 		super();
+		setPreferredSize(new Dimension(WIDTH * XSCALE, HEIGHT * YSCALE));
+		setFocusable(true); // позволяет фокусироваться на объекте GamePanel. Необходимо для обработки пользовательского ввода
+		requestFocus(); // получает фокус
 		//adjustDim();
+	}
+
+	public void setFullScreen(){
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice gd = ge.getDefaultScreenDevice();
+		gd.setFullScreenWindow(Game.window);
+		WIDTH_FULL = Game.window.getWidth();
+		HEIGHT_FULL = Game.window.getHeight();
+		XSCALE = WIDTH_FULL / WIDTH;
+		YSCALE = HEIGHT_FULL / HEIGHT;
+
+		XSCALE2 = (double)WIDTH_FULL / WIDTH;
+		YSCALE2 = (double) HEIGHT_FULL / HEIGHT;
 	}
 
 	public void setDim(int w, int h) {
@@ -70,6 +92,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		g = (Graphics2D) image.getGraphics();
 		gsm = new GameStateManager();
 		running = true;
+
+		try {
+			setFullScreen();
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
 
 	}
 
@@ -126,7 +155,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	private void drawToScreen() {
 		Graphics g2 = getGraphics();
 		//g2.drawImage(image, 0, 0, (int)(WIDTH * XSCALE/(RATIO - 0.04)), (int)(HEIGHT * YSCALE/(RATIO + 0.05)), null);
-		g2.drawImage(image, 0, 0, WIDTH * XSCALE, HEIGHT * YSCALE, null);
+		g2.drawImage(image, 0, 0, WIDTH_FULL, HEIGHT_FULL, null);
 
 		g2.dispose();
 	}

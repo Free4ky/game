@@ -13,13 +13,16 @@ public class Game {
 	public static int WIDTH;
 	public static int HEIGHT;
 
+	public static JFrame window;
+
 	public static void main(String[] args) {
 
 		GamePanel gp = new GamePanel();
-		JFrame window = new JFrame("Game"); // устновка названия окна
-		setMaxScreenSize(true);
-		gp.setDim(WIDTH, HEIGHT);
+		window = new JFrame("Game"); // устновка названия окна
+		//setMaxScreenSize(true);
+		//gp.setDim(WIDTH, HEIGHT);
 		window.setContentPane(gp); // установка панели GamePanel в качестве содержимого окна window
+
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // установка операторо выхода
 		window.setResizable(false); // запрезаем пользователю изменять размер окна;
 		window.pack(); // устанавливает минимальный необходимый размер окна для отображения компонентов

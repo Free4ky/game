@@ -120,6 +120,7 @@ public class MenuState extends GameState {
 		if (!transition.transitionHasPlayed()){
 			transition.draw(g);
 		}
+		//g.drawRect(xp,yp,1,1);
 	}
 	
 	private void select() {
@@ -172,7 +173,12 @@ public class MenuState extends GameState {
 		//System.out.println(x/GamePanel.XSCALER + " " + y/GamePanel.YSCALER);
 		//System.out.println(buttons.get(0).x);
 		for(Rectangle r: buttons){
-			if (r.contains(x/GamePanel.XSCALE,y/GamePanel.YSCALE)){
+			if (
+					x < (int)((r.x+r.width)*GamePanel.XSCALE2) &&
+					x > (int)((r.x)*GamePanel.XSCALE2) &&
+					y < (int)((r.y+r.height)*GamePanel.YSCALE2) &&
+					y > (int)((r.y)*GamePanel.YSCALE2)
+			){
 				int i = (r.y - start_y)/20;
 				if (i == currentChoice){
 					select();

@@ -40,6 +40,8 @@ public class LevelMenuState extends GameState{
 
     private Transition transition;
 
+    private int xp, yp = 0;
+
     public LevelMenuState(GameStateManager gsm){
         init();
         this.gsm = gsm;
@@ -219,7 +221,12 @@ public class LevelMenuState extends GameState{
         int ey = e.getY();
         for(Coords c: buttons){
             //делим на scale, чтобы получить достоверные координаты
-            if(rad/2 > c.distance(ex/GamePanel.XSCALE,ey/GamePanel.YSCALE)){
+            if(
+                    ex < (int)((c.x + rad/2)*GamePanel.XSCALE2) &&
+                    ex > (int)((c.x - rad/2)*GamePanel.XSCALE2) &&
+                    ey < (int)((c.y + rad/2)*GamePanel.YSCALE2) &&
+                    ey > (int)((c.y - rad/2) * GamePanel.YSCALE2)
+            ){
                 int row = (c.getY() - y) / btw;
                 int col = numInRow - 1 + (c.getX() - GamePanel.WIDTH/2- (numInRow/2*btw))/btw;
                 //System.out.println(row + " " + col);
@@ -232,7 +239,13 @@ public class LevelMenuState extends GameState{
                 }
             }
         }
-        if (back_button.contains(ex/GamePanel.XSCALE,ey/GamePanel.YSCALE)){
+        // for back button
+        if (
+            ex < (int)((back_button.x + back_button.width) * GamePanel.XSCALE2) &&
+            ex > (int)((back_button.x) * GamePanel.XSCALE2) &&
+            ey < (int)((back_button.y + back_button.height) * GamePanel.YSCALE2) &&
+            ey > (int)((back_button.y)*GamePanel.YSCALE2)
+        ){
             if (currentChoice == NUM_LEVELS){
                 select();
             }
