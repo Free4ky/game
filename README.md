@@ -9,5 +9,4 @@ ____
 
 ### :briefcase: Демонстрация работы :
 
-https://user-images.githubusercontent.com/51875349/195356755-0863eb3e-3ff5-414e-ac8a-47d47c6e60a2.mp4
-
+https://user-images.githubusercontent.com/51875349/195357042-41490076-f63a-405d-ae94-2e99fda0e861.mp4
